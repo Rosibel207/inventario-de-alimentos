@@ -1,0 +1,3568 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Inventario Escolar</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+font-family:Arial,Helvetica,sans-serif;
+background:#f5f7fa;
+color:#263238
+}
+
+button,input,select{font-family:inherit}
+button{cursor:pointer}
+.oculto{display:none!important}
+.sistema{display:flex;min-height:100vh}
+
+/* MENU */
+.menu-lateral{
+width:270px;
+min-height:100vh;
+background:#fff;
+border-right:1px solid #dfe4e8;
+position:fixed;
+left:0;
+top:0;
+padding:20px 15px;
+z-index:10000;
+transform:translateX(-100%);
+transition:.3s;
+box-shadow:3px 0 15px rgba(0,0,0,.06);
+}
+
+.menu-lateral.menu-abierto{
+transform:translateX(0);
+}
+
+.logo-instituto{
+width:55px;
+height:55px;
+object-fit:contain;
+border-radius:8px;
+display:block;
+margin:0 auto;
+}
+
+.nombre-logo{
+display:flex;
+flex-direction:column;
+line-height:1.2;
+text-align:center;
+width:100%;
+}
+
+.nombre-logo strong{
+color:#174ea6;
+font-size:19px
+}
+
+.nombre-logo span{
+color:#555;
+font-size:16px;
+margin-top:3px
+}
+
+.menu{
+display:flex;
+flex-direction:column;
+gap:6px;
+}
+
+.menu-item{
+width:100%;
+min-height:50px;
+border:0;
+background:transparent;
+display:flex;
+align-items:center;
+gap:12px;
+padding:10px 12px;
+border-radius:9px;
+color:#56616b;
+font-size:15px;
+text-align:left;
+text-decoration:none;
+}
+
+.menu-item:hover,
+.menu-item.activo{
+background:#e5efff;
+color:#174ea6;
+text-decoration:none;
+}
+
+.menu-item.activo{
+font-weight:bold;
+}
+
+.icono-menu{
+width:27px;
+text-align:center;
+font-size:20px;
+}
+
+.panel-icon{color:#3975c9}
+.catalogo-icon{color:#4567b7}
+.alerta-icon{color:#e19a24}
+.entrada-icon{color:#159447}
+.salida-icon{color:#176dcc}
+.config-icon{color:#737d86}
+
+.contador-menu{
+margin-left:auto;
+min-width:27px;
+height:27px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#d85b70;
+color:white;
+border-radius:50%;
+font-size:12px;
+font-weight:bold;
+}
+
+.cerrar-sesion{
+position:absolute;
+bottom:22px;
+left:15px;
+width:calc(100% - 30px);
+border:0;
+background:transparent;
+display:flex;
+align-items:center;
+gap:10px;
+padding:11px 14px;
+color:#d16b76;
+font-size:14px;
+text-align:left;
+}
+
+.cerrar-sesion:hover{
+background:#fff1f2;
+border-radius:8px;
+}
+
+/* CONTENIDO */
+.contenido{
+width:100%;
+min-height:100vh;
+transition:.3s;
+}
+
+.contenido.menu-desplazado{
+margin-left:270px;
+width:calc(100% - 270px);
+}
+
+.cabecera{
+min-height:110px;
+background:#fff;
+border-bottom:1px solid #dfe4e8;
+display:flex;
+align-items:center;
+padding:20px 40px;
+}
+
+.btn-hamburguesa{
+width:48px;
+height:48px;
+border:0;
+border-radius:9px;
+background:#174ea6;
+color:#fff;
+font-size:27px;
+display:flex;
+align-items:center;
+justify-content:center;
+position:fixed;
+top:20px;
+left:15px;
+margin:0;
+z-index:30000;
+box-shadow:0 4px 12px #0003;
+}
+
+.btn-hamburguesa:hover{
+background:#123d82;
+}
+
+.titulo{
+position:absolute;
+left:50%;
+transform:translateX(-50%);
+text-align:center;
+min-width:0;
+white-space:nowrap;
+}
+
+.titulo h1{
+font-size:27px;
+margin-bottom:6px;
+}
+
+.titulo p{
+color:#6c757d;
+font-size:15px;
+}
+
+.usuario{
+margin-left:auto;
+display:flex;
+align-items:center;
+gap:9px;
+}
+
+/* NOTIFICACIONES */
+.notificaciones{
+position:relative;
+}
+
+.btn-campana{
+border:0;
+background:transparent;
+font-size:22px;
+position:relative;
+width:42px;
+height:42px;
+}
+
+.contador-notificaciones{
+position:absolute;
+top:0;
+right:0;
+min-width:18px;
+height:18px;
+padding:2px 5px;
+background:#d85b70;
+color:#fff;
+border-radius:10px;
+font-size:11px;
+font-weight:bold;
+}
+
+.panel-notificaciones{
+position:absolute;
+top:50px;
+right:0;
+width:330px;
+background:#fff;
+border:1px solid #ddd;
+border-radius:10px;
+box-shadow:0 8px 25px #0002;
+z-index:20000;
+overflow:hidden;
+}
+
+.titulo-notificaciones{
+padding:15px;
+display:flex;
+justify-content:space-between;
+border-bottom:1px solid #eee;
+}
+
+.titulo-notificaciones span{
+color:#888;
+font-size:13px;
+}
+
+.notificacion-item{
+display:flex;
+align-items:center;
+gap:12px;
+padding:15px;
+border-bottom:1px solid #eee;
+}
+
+.icono-notificacion{
+width:38px;
+height:38px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#fff0e0;
+border-radius:50%;
+}
+
+.texto-notificacion{
+display:flex;
+flex-direction:column;
+gap:3px;
+}
+
+.texto-notificacion span,
+.texto-notificacion small{
+color:#777;
+font-size:13px;
+}
+
+.sin-notificaciones{
+padding:25px;
+text-align:center;
+color:#888;
+}
+
+/* ADMIN */
+.foto-usuario{
+width:40px;
+height:40px;
+border-radius:50%;
+background:#174ea6;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#fff;
+overflow:hidden;
+}
+
+.foto-usuario img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.admin-btn{
+border:0;
+background:transparent;
+display:flex;
+align-items:center;
+gap:7px;
+font-size:15px;
+font-weight:bold;
+color:#37474f;
+}
+
+.flecha{
+font-size:18px;
+}
+
+.menu-admin{
+position:fixed;
+top:85px;
+right:25px;
+width:220px;
+background:#fff;
+border:1px solid #ddd;
+border-radius:10px;
+box-shadow:0 8px 25px #0002;
+z-index:30000;
+overflow:hidden;
+}
+
+.menu-admin-header{
+padding:12px 15px;
+border-bottom:1px solid #eee;
+background:#f8fafc;
+}
+
+.menu-admin-header strong{
+display:block;
+font-size:13px;
+color:#174ea6;
+}
+
+.menu-admin-header span{
+display:block;
+font-size:12px;
+color:#777;
+margin-top:3px;
+}
+
+.menu-admin button{
+width:100%;
+padding:13px 15px;
+border:0;
+background:#fff;
+text-align:left;
+font-size:14px;
+}
+
+.menu-admin button:hover{
+background:#f2f5f8;
+}
+
+/* CATALOGO */
+.catalogo{
+padding:32px 40px;
+}
+
+.encabezado-modulo{
+display:flex;
+align-items:center;
+gap:12px;
+margin-bottom:25px;
+}
+
+.encabezado-modulo h2{
+font-size:23px;
+}
+
+.icono-grande{
+font-size:28px;
+}
+
+.barra-superior{
+display:flex;
+align-items:center;
+gap:15px;
+margin-bottom:25px;
+}
+
+.busqueda{
+flex:1;
+height:46px;
+background:#fff;
+border:1px solid #ccd3d9;
+border-radius:8px;
+display:flex;
+align-items:center;
+padding:0 12px;
+}
+
+.lupa{
+font-size:22px;
+color:#777;
+}
+
+.busqueda input{
+width:100%;
+border:0;
+outline:0;
+padding:10px;
+font-size:14px;
+}
+
+.filtro select{
+height:46px;
+border:1px solid #ccd3d9;
+border-radius:8px;
+background:#fff;
+padding:0 12px;
+color:#555;
+font-size:14px;
+}
+
+.btn-nuevo{
+height:46px;
+border:0;
+border-radius:8px;
+background:#174ea6;
+color:#fff;
+padding:0 18px;
+font-weight:bold;
+}
+
+.btn-nuevo:hover{
+background:#123d82;
+}
+
+/* TABLA */
+.tabla-contenedor{
+background:#fff;
+border-radius:12px;
+overflow-x:auto;
+border:1px solid #d9e0e6;
+box-shadow:0 3px 12px #0001;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+min-width:950px;
+}
+
+thead{
+background:#edf3fa;
+}
+
+th{
+color:#263f5b;
+font-size:14px;
+padding:16px 14px;
+text-align:left;
+border-right:1px solid #d7e0e8;
+border-bottom:2px solid #c9d5df;
+}
+
+td{
+color:#37474f;
+font-size:14px;
+padding:17px 14px;
+border-right:1px solid #e0e5e9;
+border-bottom:1px solid #e0e5e9;
+}
+
+tbody tr:hover{
+background:#f7faff;
+}
+
+.nombre-producto{
+display:block;
+font-weight:bold;
+}
+
+.empresa{
+display:block;
+color:#999;
+font-size:12px;
+margin-top:4px;
+}
+
+.estado{
+display:inline-block;
+padding:7px 10px;
+border-radius:15px;
+font-size:12px;
+font-weight:bold;
+}
+
+.estado.normal{
+background:#e3f6ea;
+color:#16803c;
+}
+
+.estado.bajo{
+background:#fff0df;
+color:#c47b21;
+}
+
+/* BOTON VER */
+.btn-detalles{
+border:1px solid #c9dcfa;
+background:#eaf2ff;
+color:#174ea6;
+padding:7px 14px;
+border-radius:6px;
+font-weight:bold;
+}
+
+/* BASURERO: SOLO EL ICONO */
+.btn-eliminar{
+margin-left:5px;
+padding:0;
+border:none;
+background:transparent;
+color:#d9534f;
+font-size:16px;
+cursor:pointer;
+box-shadow:none;
+outline:none;
+display:inline;
+vertical-align:middle;
+}
+
+.btn-eliminar:hover{
+background:transparent;
+box-shadow:none;
+transform:scale(1.05);
+}
+
+/* CARDS */
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+gap:20px;
+}
+
+.card{
+background:#fff;
+border-radius:11px;
+padding:22px;
+box-shadow:0 3px 10px #0001;
+border:1px solid #e1e6ea;
+}
+
+.card h3{
+margin-bottom:10px;
+font-size:17px;
+}
+
+.card p{
+color:#666;
+margin:7px 0;
+font-size:14px;
+}
+
+.card-numero{
+font-size:32px;
+font-weight:bold;
+color:#174ea6;
+margin-top:15px;
+}
+
+/* MODALES */
+.modal{
+position:fixed;
+inset:0;
+background:#0007;
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:50000;
+}
+
+.modal-contenido{
+width:450px;
+max-width:90%;
+max-height:90vh;
+overflow-y:auto;
+background:#fff;
+border-radius:12px;
+padding:28px;
+position:relative;
+box-shadow:0 15px 40px #0004;
+}
+
+.modal-contenido h2{
+margin-bottom:22px;
+}
+
+.cerrar-modal{
+position:absolute;
+top:12px;
+right:15px;
+border:0;
+background:transparent;
+font-size:28px;
+color:#777;
+}
+
+.modal-contenido label{
+display:block;
+margin:12px 0 6px;
+font-weight:bold;
+font-size:14px;
+}
+
+.modal-contenido input,
+.modal-contenido select{
+width:100%;
+height:42px;
+border:1px solid #cfd5da;
+border-radius:7px;
+padding:8px 10px;
+outline:0;
+}
+
+.btn-guardar,
+.btn-cancelar{
+width:100%;
+height:43px;
+border:0;
+border-radius:7px;
+font-weight:bold;
+}
+
+.btn-guardar{
+margin-top:18px;
+background:#174ea6;
+color:#fff;
+}
+
+.btn-cancelar{
+margin-top:10px;
+background:#eef1f4;
+color:#555;
+}
+
+/* FONDO */
+.fondo-menu{
+display:none;
+position:fixed;
+inset:0;
+background:#0006;
+z-index:9000;
+}
+
+.fondo-menu.fondo-visible{
+display:block;
+}
+
+/* RESPONSIVE */
+@media(max-width:850px){
+
+.cabecera{
+padding:20px
+}
+
+.catalogo{
+padding:25px 20px
+}
+
+.titulo h1{
+font-size:23px
+}
+
+.barra-superior{
+flex-wrap:wrap
+}
+
+}
+
+@media(max-width:600px){
+
+.cabecera{
+min-height:120px;
+padding:15px;
+align-items:flex-start;
+}
+
+.btn-hamburguesa{
+width:45px;
+height:45px;
+font-size:25px;
+margin-right:12px;
+}
+
+.titulo h1{
+font-size:20px
+}
+
+.titulo p{
+font-size:13px
+}
+
+.usuario{
+position:absolute;
+right:15px;
+top:15px;
+}
+
+.catalogo{
+padding:20px 15px;
+}
+
+.barra-superior{
+flex-direction:column;
+align-items:stretch;
+}
+
+.filtro select,
+.btn-nuevo{
+width:100%;
+}
+
+.panel-notificaciones{
+right:-100px;
+width:290px;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<div id="fondoMenu" class="fondo-menu"></div>
+
+<div class="sistema">
+
+<aside class="menu-lateral">
+
+<div class="logo-area">
+
+<img src="img/logo1.png" class="logo-instituto" alt="Logo">
+
+<div class="nombre-logo">
+<strong>Inventario</strong>
+<span>Escolar</span>
+</div>
+
+</div>
+
+<nav class="menu">
+
+<a href="panel.html" class="menu-item">
+<span class="icono-menu panel-icon">▦</span>
+<span>Panel de Control</span>
+</a>
+
+<button class="menu-item activo"
+onclick="mostrarModulo('catalogo',this)">
+<span class="icono-menu catalogo-icon">▤</span>
+<span>Catálogo</span>
+</button>
+
+<button class="menu-item"
+onclick="mostrarModulo('alertas',this)">
+<span class="icono-menu alerta-icon">⚠</span>
+<span>Alertas</span>
+<span id="contadorMenuAlertas"
+class="contador-menu">0</span>
+</button>
+
+<a href="indext.html" class="menu-item">
+<span class="icono-menu entrada-icon">▦</span>
+<span>entrada</span>
+</a>
+
+<button class="menu-item"
+onclick="window.location.href='index1.html'">
+<span class="icono-menu salida-icon">↓</span>
+<span>Salidas</span>
+</button>
+
+<button class="menu-item"
+onclick="mostrarModulo('configuracion',this)">
+<span class="icono-menu config-icon">⚙</span>
+<span>Configuración</span>
+</button>
+
+</nav>
+
+<button id="cerrarSesion"
+class="cerrar-sesion">
+
+<span class="icono-salir">⇥</span>
+
+<span>
+Cerrar<br>
+Sesión
+</span>
+
+</button>
+
+</aside>
+
+<main class="contenido">
+
+<header class="cabecera">
+
+<button id="btnHamburguesa"
+class="btn-hamburguesa">
+☰
+</button>
+
+<div class="titulo">
+
+<h1 id="tituloModulo">
+Catálogo de Productos
+</h1>
+
+<p id="subtituloModulo">
+Gestiona el inventario de alimentos
+</p>
+
+</div>
+
+<div class="usuario">
+
+<div class="notificaciones">
+
+<button id="btnNotificaciones"
+class="btn-campana">
+
+🔔
+
+<span id="contadorNotificaciones"
+class="contador-notificaciones">
+0
+</span>
+
+</button>
+
+<div id="panelNotificaciones"
+class="panel-notificaciones oculto">
+
+<div class="titulo-notificaciones">
+
+<strong>
+Notificaciones
+</strong>
+
+<span id="textoAlertas">
+0 alertas
+</span>
+
+</div>
+
+<div id="listaNotificaciones">
+
+<p class="sin-notificaciones">
+No hay notificaciones.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="foto-usuario"
+id="fotoUsuario">
+👤
+</div>
+
+<button id="btnAdmin"
+class="admin-btn">
+
+<span id="navUserNombre">
+Admin
+</span>
+
+<span class="flecha">
+⌄
+</span>
+
+</button>
+
+</div>
+
+</header>
+
+<section id="contenidoModulo"
+class="catalogo">
+</section>
+
+</main>
+
+</div>
+
+
+<!-- MENU ADMIN -->
+
+<div id="menuAdmin"
+class="menu-admin oculto">
+
+<div class="menu-admin-header">
+
+<strong id="dropUserNombre">
+Admin
+</strong>
+
+<span id="dropUserCorreo">
+admin@instituto.com
+</span>
+
+<span id="dropUserRol">
+Administrador
+</span>
+
+</div>
+
+<button id="miCuenta">
+👤 Mi cuenta
+</button>
+
+<button id="agregarCuenta">
+👤 Agregar cuenta
+</button>
+
+<button id="cambiarCuenta">
+🔄 Cambiar cuenta
+</button>
+
+<button id="salirAdmin">
+🚪 Cerrar sesión
+</button>
+
+</div>
+
+
+<!-- MODAL CUENTA -->
+
+<div id="modalCuenta"
+class="modal oculto">
+
+<div class="modal-contenido">
+
+<button id="cerrarCuenta"
+class="cerrar-modal">
+×
+</button>
+
+<h2 id="tituloModalCuenta">
+Agregar cuenta
+</h2>
+
+<div id="contenidoCuenta">
+</div>
+
+</div>
+
+</div>
+
+
+<!-- MODAL PRODUCTO -->
+
+<div id="modalProducto"
+class="modal oculto">
+
+<div class="modal-contenido">
+
+<button id="cerrarModal"
+class="cerrar-modal">
+×
+</button>
+
+<h2>
+Nuevo Producto
+</h2>
+
+<form id="formProducto">
+
+<label>
+Nombre del producto
+</label>
+
+<input
+id="nombreProducto"
+type="text"
+placeholder="Ej. Frijoles"
+required>
+
+<label>
+Categoría
+</label>
+
+<select
+id="categoriaProducto"
+required>
+
+<option value="">
+Seleccione una categoría
+</option>
+
+<option>
+Lácteos
+</option>
+
+<option>
+Granos
+</option>
+
+<option>
+Proteínas
+</option>
+
+<option>
+Verduras
+</option>
+
+<option>
+Panadería
+</option>
+
+</select>
+
+<label>
+Cantidad
+</label>
+
+<input
+id="cantidadProducto"
+type="number"
+min="0"
+required>
+
+<label>
+Unidad
+</label>
+
+<select id="unidadProducto">
+
+<option>
+Kg
+</option>
+
+<option>
+Litros
+</option>
+
+<option>
+Unidades
+</option>
+
+</select>
+
+<label>
+Stock mínimo
+</label>
+
+<input
+id="minimoProducto"
+type="number"
+min="0"
+required>
+
+<label>
+Ubicación
+</label>
+
+<input
+id="ubicacionProducto"
+type="text"
+placeholder="Ej. Almacén A"
+required>
+
+<label>
+Vencimiento
+</label>
+
+<input
+id="vencimientoProducto"
+type="date"
+required>
+
+<button
+type="submit"
+class="btn-guardar">
+
+Guardar Producto
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* CUENTAS */
+
+let cuentas=[];
+
+try{
+
+cuentas=
+JSON.parse(
+localStorage.getItem(
+"cuentasInventario"
+)
+)||[];
+
+}catch(error){
+
+cuentas=[];
+
+}
+
+let cuentaActivaId=
+localStorage.getItem(
+"cuentaActivaInventario"
+);
+
+let cuentaEditandoId=null;
+
+let fotoTemporal="";
+
+
+/* CREAR CUENTA INICIAL */
+
+if(cuentas.length===0){
+
+const cuentaInicial={
+
+id:Date.now().toString(),
+
+nombre:"Admin",
+
+correo:"admin@instituto.com",
+
+rol:"Administrador",
+
+foto:""
+
+};
+
+cuentas.push(
+cuentaInicial
+);
+
+cuentaActivaId=
+cuentaInicial.id;
+
+guardarCuentas();
+
+}
+
+
+/* COMPROBAR CUENTA ACTIVA */
+
+if(
+!cuentaActivaId ||
+!cuentas.some(
+cuenta=>
+cuenta.id===cuentaActivaId
+)
+){
+
+cuentaActivaId=
+cuentas[0].id;
+
+guardarCuentas();
+
+}
+
+
+/* GUARDAR CUENTAS */
+
+function guardarCuentas(){
+
+localStorage.setItem(
+"cuentasInventario",
+JSON.stringify(cuentas)
+);
+
+localStorage.setItem(
+"cuentaActivaInventario",
+cuentaActivaId
+);
+
+}
+
+
+/* OBTENER CUENTA ACTIVA */
+
+function obtenerCuentaActiva(){
+
+return cuentas.find(
+cuenta=>
+cuenta.id===cuentaActivaId
+);
+
+}
+
+
+/* MOSTRAR CUENTA */
+
+function actualizarPerfil(){
+
+const cuenta=
+obtenerCuentaActiva();
+
+if(!cuenta)return;
+
+$("navUserNombre")
+.textContent=
+cuenta.nombre;
+
+$("dropUserNombre")
+.textContent=
+cuenta.nombre;
+
+$("dropUserCorreo")
+.textContent=
+cuenta.correo;
+
+$("dropUserRol")
+.textContent=
+cuenta.rol;
+
+const foto=
+$("fotoUsuario");
+
+if(cuenta.foto){
+
+foto.innerHTML=
+`<img src="${cuenta.foto}" alt="Foto">`;
+
+}else{
+
+foto.innerHTML="👤";
+
+}
+
+}
+
+
+/* MI CUENTA */
+
+function abrirMiCuenta(){
+
+const cuenta=
+obtenerCuentaActiva();
+
+if(!cuenta)return;
+
+cuentaEditandoId=
+cuenta.id;
+
+fotoTemporal=
+cuenta.foto||"";
+
+$("tituloModalCuenta")
+.textContent=
+"Mi cuenta";
+
+$("contenidoCuenta")
+.innerHTML=`
+
+<div style="
+width:100px;
+height:100px;
+border-radius:50%;
+background:#174ea6;
+margin:0 auto 15px;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#fff;
+font-size:40px;
+overflow:hidden;
+"
+id="previewFoto">
+
+${
+cuenta.foto
+?
+`<img src="${cuenta.foto}"
+style="width:100%;height:100%;object-fit:cover;">`
+:
+"👤"
+}
+
+</div>
+
+<label>
+Nombre
+</label>
+
+<input
+id="nombreCuenta"
+type="text"
+value="${escapeHTML(cuenta.nombre)}"
+required>
+
+<label>
+Correo electrónico
+</label>
+
+<input
+id="correoCuenta"
+type="email"
+value="${escapeHTML(cuenta.correo)}"
+required>
+
+<label>
+Rol
+</label>
+
+<select id="rolCuenta">
+
+<option value="Administrador"
+${cuenta.rol==="Administrador"?"selected":""}>
+Administrador
+</option>
+
+<option value="Encargado de inventario"
+${cuenta.rol==="Encargado de inventario"?"selected":""}>
+Encargado de inventario
+</option>
+
+<option value="Consulta"
+${cuenta.rol==="Consulta"?"selected":""}>
+Consulta
+</option>
+
+</select>
+
+<label>
+Foto de perfil
+</label>
+
+<input
+id="fotoCuenta"
+type="file"
+accept="image/*">
+
+<button
+id="guardarPerfil"
+class="btn-guardar">
+
+Guardar cambios
+
+</button>
+
+<button
+id="eliminarCuentaBtn"
+class="btn-cancelar"
+style="background:#ffe5e5;color:#c62828;">
+
+Eliminar cuenta
+
+</button>
+
+`;
+
+$("fotoCuenta")
+.addEventListener(
+"change",
+previsualizarFoto
+);
+
+$("guardarPerfil").onclick=
+guardarCuenta;
+
+$("eliminarCuentaBtn").onclick=
+eliminarCuenta;
+
+$("modalCuenta")
+.classList
+.remove("oculto");
+
+}
+
+
+/* AGREGAR CUENTA */
+
+function abrirModalAgregarCuenta(){
+
+cuentaEditandoId=null;
+
+fotoTemporal="";
+
+$("tituloModalCuenta")
+.textContent=
+"Agregar cuenta";
+
+$("contenidoCuenta")
+.innerHTML=`
+
+<div
+style="
+width:100px;
+height:100px;
+border-radius:50%;
+background:#174ea6;
+margin:0 auto 15px;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#fff;
+font-size:40px;
+overflow:hidden;
+"
+id="previewFoto">
+
+👤
+
+</div>
+
+<label>
+Nombre
+</label>
+
+<input
+id="nombreCuenta"
+type="text"
+placeholder="Nombre completo"
+required>
+
+<label>
+Correo electrónico
+</label>
+
+<input
+id="correoCuenta"
+type="email"
+placeholder="correo@instituto.com"
+required>
+
+<label>
+Rol
+</label>
+
+<select id="rolCuenta">
+
+<option value="Administrador">
+Administrador
+</option>
+
+<option value="Encargado de inventario">
+Encargado de inventario
+</option>
+
+<option value="Consulta">
+Consulta
+</option>
+
+</select>
+
+<label>
+Foto de perfil
+</label>
+
+<input
+id="fotoCuenta"
+type="file"
+accept="image/*">
+
+<button
+id="guardarNuevaCuenta"
+class="btn-guardar">
+
+Crear cuenta
+
+</button>
+
+`;
+
+$("fotoCuenta")
+.addEventListener(
+"change",
+previsualizarFoto
+);
+
+$("guardarNuevaCuenta").onclick=
+guardarCuenta;
+
+$("modalCuenta")
+.classList
+.remove("oculto");
+
+}
+
+
+/* PREVISUALIZAR FOTO */
+
+function previsualizarFoto(event){
+
+const archivo=
+event.target.files[0];
+
+if(!archivo)return;
+
+const lector=
+new FileReader();
+
+lector.onload=function(e){
+
+fotoTemporal=
+e.target.result;
+
+mostrarPreview(
+fotoTemporal
+);
+
+};
+
+lector.readAsDataURL(
+archivo
+);
+
+}
+
+
+/* PREVIEW */
+
+function mostrarPreview(foto){
+
+const preview=
+$("previewFoto");
+
+if(!preview)return;
+
+if(foto){
+
+preview.innerHTML=
+`<img src="${foto}"
+style="width:100%;height:100%;object-fit:cover;">`;
+
+}else{
+
+preview.innerHTML="👤";
+
+}
+
+}
+
+
+/* GUARDAR CUENTA */
+
+function guardarCuenta(){
+
+const nombre=
+$("nombreCuenta")
+.value
+.trim();
+
+const correo=
+$("correoCuenta")
+.value
+.trim();
+
+const rol=
+$("rolCuenta")
+.value;
+
+if(!nombre){
+
+alert(
+"Ingrese el nombre."
+);
+
+return;
+
+}
+
+if(!correo){
+
+alert(
+"Ingrese el correo electrónico."
+);
+
+return;
+
+}
+
+if(!correo.includes("@")){
+
+alert(
+"Ingrese un correo electrónico válido."
+);
+
+return;
+
+}
+
+if(cuentaEditandoId){
+
+const cuenta=
+cuentas.find(
+c=>c.id===cuentaEditandoId
+);
+
+if(cuenta){
+
+cuenta.nombre=
+nombre;
+
+cuenta.correo=
+correo;
+
+cuenta.rol=
+rol;
+
+cuenta.foto=
+fotoTemporal||"";
+
+}
+
+}else{
+
+const nuevaCuenta={
+
+id:
+Date.now().toString(),
+
+nombre:
+nombre,
+
+correo:
+correo,
+
+rol:
+rol,
+
+foto:
+fotoTemporal||""
+
+};
+
+cuentas.push(
+nuevaCuenta
+);
+
+cuentaActivaId=
+nuevaCuenta.id;
+
+}
+
+guardarCuentas();
+
+actualizarPerfil();
+
+$("modalCuenta")
+.classList
+.add("oculto");
+
+alert(
+"Cuenta guardada correctamente."
+);
+
+}
+
+
+/* CAMBIAR CUENTA */
+
+function abrirModalCambiarCuenta(){
+
+$("tituloModalCuenta")
+.textContent=
+"Cambiar cuenta";
+
+let contenido=`
+
+<p style="margin-bottom:10px;">
+Selecciona la cuenta que deseas utilizar:
+</p>
+
+`;
+
+cuentas.forEach(
+function(cuenta){
+
+contenido+=`
+
+<button
+style="
+width:100%;
+padding:12px;
+margin-top:8px;
+border:1px solid #ddd;
+border-radius:7px;
+background:#fff;
+text-align:left;
+"
+onclick="cambiarCuenta('${cuenta.id}')">
+
+👤
+
+<strong>
+${escapeHTML(cuenta.nombre)}
+</strong>
+
+<br>
+
+<small style="color:#777;">
+${escapeHTML(cuenta.correo)}
+</small>
+
+</button>
+
+`;
+
+}
+);
+
+contenido+=`
+
+<button
+class="btn-guardar"
+onclick="abrirModalAgregarCuenta()">
+
+＋ Agregar cuenta
+
+</button>
+
+`;
+
+$("contenidoCuenta")
+.innerHTML=
+contenido;
+
+$("modalCuenta")
+.classList
+.remove("oculto");
+
+}
+
+
+/* CAMBIAR CUENTA */
+
+function cambiarCuenta(id){
+
+const cuenta=
+cuentas.find(
+c=>c.id===id
+);
+
+if(!cuenta)return;
+
+cuentaActivaId=
+cuenta.id;
+
+guardarCuentas();
+
+actualizarPerfil();
+
+$("modalCuenta")
+.classList
+.add("oculto");
+
+alert(
+"Cuenta cambiada correctamente."
+);
+
+}
+
+
+/* ELIMINAR CUENTA */
+
+function eliminarCuenta(){
+
+const cuenta=
+obtenerCuentaActiva();
+
+if(!cuenta)return;
+
+if(cuentas.length<=1){
+
+alert(
+"No puedes eliminar la única cuenta."
+);
+
+return;
+
+}
+
+const confirmar=
+confirm(
+"¿Deseas eliminar la cuenta de "+
+cuenta.nombre+
+"?"
+);
+
+if(!confirmar)return;
+
+cuentas=
+cuentas.filter(
+c=>c.id!==cuenta.id
+);
+
+cuentaActivaId=
+cuentas[0].id;
+
+guardarCuentas();
+
+actualizarPerfil();
+
+$("modalCuenta")
+.classList
+.add("oculto");
+
+alert(
+"Cuenta eliminada correctamente."
+);
+
+}
+
+
+/* ESCAPAR HTML */
+
+function escapeHTML(text){
+
+return String(text)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+/* DATOS */
+
+let productos=
+JSON.parse(
+localStorage.getItem("productos")
+)||[
+
+{
+codigo:"P001",
+nombre:"Frijoles",
+categoria:"Granos",
+cantidad:25,
+unidad:"Kg",
+minimo:10,
+ubicacion:"Almacén A",
+vencimiento:"2026-12-20"
+},
+
+{
+codigo:"P002",
+nombre:"Leche",
+categoria:"Lácteos",
+cantidad:5,
+unidad:"Litros",
+minimo:10,
+ubicacion:"Refrigerador",
+vencimiento:"2026-09-10"
+},
+
+{
+codigo:"P003",
+nombre:"Arroz",
+categoria:"Granos",
+cantidad:30,
+unidad:"Kg",
+minimo:10,
+ubicacion:"Almacén B",
+vencimiento:"2027-01-15"
+}
+
+];
+
+
+let entradas=
+JSON.parse(
+localStorage.getItem("entradas")
+)||[];
+
+let salidas=
+JSON.parse(
+localStorage.getItem("salidas")
+)||[];
+
+const $=
+id=>
+document.getElementById(id);
+
+
+/* GUARDAR */
+
+function guardar(){
+
+localStorage.setItem(
+"productos",
+JSON.stringify(productos)
+);
+
+localStorage.setItem(
+"entradas",
+JSON.stringify(entradas)
+);
+
+localStorage.setItem(
+"salidas",
+JSON.stringify(salidas)
+);
+
+}
+
+
+/* FECHA */
+
+function fechaActual(){
+
+return new Date()
+.toISOString()
+.split("T")[0];
+
+}
+
+
+/* ALERTAS */
+
+function alertas(){
+
+return productos.filter(
+p=>p.cantidad<=p.minimo
+);
+
+}
+
+
+function actualizarAlertas(){
+
+let lista=
+alertas();
+
+let cantidad=
+lista.length;
+
+$("contadorNotificaciones")
+.textContent=
+cantidad;
+
+$("contadorMenuAlertas")
+.textContent=
+cantidad;
+
+$("textoAlertas")
+.textContent=
+cantidad+
+(
+cantidad===1
+?
+" alerta"
+:
+" alertas"
+);
+
+$("listaNotificaciones")
+.innerHTML=
+
+cantidad
+
+?
+
+lista.map(p=>`
+
+<div class="notificacion-item">
+
+<span class="icono-notificacion">
+⚠️
+</span>
+
+<div class="texto-notificacion">
+
+<strong>
+Stock bajo
+</strong>
+
+<span>
+${p.nombre}:
+${p.cantidad}
+${p.unidad}
+</span>
+
+</div>
+
+</div>
+
+`).join("")
+
+:
+
+`
+<p class="sin-notificaciones">
+No hay alertas.
+</p>
+`;
+
+}
+
+
+/* MENU */
+
+const menuLateral=
+document.querySelector(
+".menu-lateral"
+);
+
+
+$("btnHamburguesa").onclick=e=>{
+
+e.stopPropagation();
+
+let abierto=
+menuLateral
+.classList
+.toggle("menu-abierto");
+
+$("contenidoModulo")
+.parentElement
+.classList
+.toggle(
+"menu-desplazado",
+abierto
+);
+
+$("fondoMenu")
+.classList
+.toggle(
+"fondo-visible",
+false
+);
+
+};
+
+
+$("fondoMenu").onclick=()=>{
+
+menuLateral
+.classList
+.remove("menu-abierto");
+
+$("fondoMenu")
+.classList
+.remove("fondo-visible");
+
+document.querySelector(
+".contenido"
+)
+.classList
+.remove(
+"menu-desplazado"
+);
+
+};
+
+
+/* NOTIFICACIONES */
+
+$("btnNotificaciones").onclick=e=>{
+
+e.stopPropagation();
+
+$("panelNotificaciones")
+.classList
+.toggle("oculto");
+
+$("menuAdmin")
+.classList
+.add("oculto");
+
+};
+
+
+$("btnAdmin").onclick=e=>{
+
+e.stopPropagation();
+
+$("menuAdmin")
+.classList
+.toggle("oculto");
+
+$("panelNotificaciones")
+.classList
+.add("oculto");
+
+};
+
+
+/* CUENTAS */
+
+$("miCuenta").onclick=()=>{
+
+$("menuAdmin")
+.classList
+.add("oculto");
+
+abrirMiCuenta();
+
+};
+
+
+$("agregarCuenta").onclick=()=>{
+
+$("menuAdmin")
+.classList
+.add("oculto");
+
+abrirModalAgregarCuenta();
+
+};
+
+
+$("cerrarCuenta").onclick=()=>{
+
+$("modalCuenta")
+.classList
+.add("oculto");
+
+};
+
+
+$("cambiarCuenta").onclick=()=>{
+
+$("menuAdmin")
+.classList
+.add("oculto");
+
+abrirModalCambiarCuenta();
+
+};
+
+
+/* SALIR ADMIN */
+
+$("salirAdmin").onclick=()=>{
+
+$("menuAdmin")
+.classList
+.add("oculto");
+
+alert(
+"Sesión cerrada."
+);
+
+};
+
+
+/* CERRAR SESION */
+
+$("cerrarSesion").onclick=()=>{
+
+alert(
+"Sesión cerrada correctamente."
+);
+
+};
+
+
+/* CERRAR MENUS */
+
+document.onclick=e=>{
+
+if(
+!e.target.closest(
+".notificaciones"
+)
+)
+
+$("panelNotificaciones")
+.classList
+.add("oculto");
+
+if(
+!e.target.closest("#btnAdmin") &&
+!e.target.closest("#menuAdmin")
+)
+
+$("menuAdmin")
+.classList
+.add("oculto");
+
+};
+
+
+/* MOSTRAR MODULO */
+
+function mostrarModulo(
+modulo,
+boton
+){
+
+document.querySelectorAll(
+".menu-item"
+)
+.forEach(
+b=>
+b.classList.remove("activo")
+);
+
+if(boton)
+boton.classList.add("activo");
+
+menuLateral
+.classList
+.remove("menu-abierto");
+
+$("fondoMenu")
+.classList
+.remove("fondo-visible");
+
+document.querySelector(
+".contenido"
+)
+.classList
+.remove(
+"menu-desplazado"
+);
+
+if(modulo==="panel")
+panel();
+
+if(modulo==="catalogo")
+catalogo();
+
+if(modulo==="alertas")
+mostrarAlertas();
+
+if(modulo==="entradas")
+mostrarEntradas();
+
+if(modulo==="salidas")
+mostrarSalidas();
+
+if(modulo==="configuracion")
+configuracion();
+
+}
+
+
+/* PANEL */
+
+function panel(){
+
+$("tituloModulo")
+.textContent=
+"Panel de Control";
+
+$("subtituloModulo")
+.textContent=
+"Resumen general del inventario";
+
+$("contenidoModulo")
+.innerHTML=`
+
+<div class="encabezado-modulo">
+
+<span class="icono-grande">
+📊
+</span>
+
+<h2>
+Resumen del Inventario
+</h2>
+
+</div>
+
+<div class="cards">
+
+<div class="card">
+
+<h3>
+📦 Productos
+</h3>
+
+<div class="card-numero">
+${productos.length}
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>
+⚠️ Alertas
+</h3>
+
+<div class="card-numero">
+${alertas().length}
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>
+📥 Entradas
+</h3>
+
+<div class="card-numero">
+${entradas.length}
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>
+📤 Salidas
+</h3>
+
+<div class="card-numero">
+${salidas.length}
+</div>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+/* CATALOGO */
+
+function catalogo(){
+
+$("tituloModulo")
+.textContent=
+"Catálogo de Productos";
+
+$("subtituloModulo")
+.textContent=
+"Gestiona el inventario de alimentos";
+
+$("contenidoModulo")
+.innerHTML=`
+
+<div class="encabezado-modulo">
+
+<span class="icono-grande">
+📦
+</span>
+
+<h2>
+Catálogo de Productos
+</h2>
+
+</div>
+
+<div class="barra-superior">
+
+<div class="busqueda">
+
+<span class="lupa">
+⌕
+</span>
+
+<input
+id="buscarProducto"
+placeholder="Buscar productos..."
+>
+
+</div>
+
+<div class="filtro">
+
+<select id="filtroCategoria">
+
+<option value="">
+Todas las categorías
+</option>
+
+<option>
+Lácteos
+</option>
+
+<option>
+Granos
+</option>
+
+<option>
+Proteínas
+</option>
+
+<option>
+Verduras
+</option>
+
+<option>
+Panadería
+</option>
+
+</select>
+
+</div>
+
+<button
+id="nuevoProducto"
+class="btn-nuevo">
+
+＋ Nuevo Producto
+
+</button>
+
+</div>
+
+
+<div class="tabla-contenedor">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>
+Código
+</th>
+
+<th>
+Producto
+</th>
+
+<th>
+Categoría
+</th>
+
+<th>
+Cantidad
+</th>
+
+<th>
+Estado
+</th>
+
+<th>
+Ubicación
+</th>
+
+<th>
+Vencimiento
+</th>
+
+<th>
+Acciones
+</th>
+
+</tr>
+
+</thead>
+
+<tbody id="listaProductos">
+</tbody>
+
+</table>
+
+</div>
+
+`;
+
+
+$("nuevoProducto").onclick=()=>{
+
+$("modalProducto")
+.classList
+.remove("oculto");
+
+};
+
+
+$("buscarProducto").oninput=
+filtrar;
+
+$("filtroCategoria").onchange=
+filtrar;
+
+mostrarProductos();
+
+}
+
+
+/* MOSTRAR PRODUCTOS */
+
+function mostrarProductos(
+lista=productos
+){
+
+$("listaProductos")
+.innerHTML=
+
+lista.map(p=>{
+
+let bajo=
+p.cantidad<=p.minimo;
+
+return`
+
+<tr>
+
+<td>
+${p.codigo}
+</td>
+
+<td>
+
+<span class="nombre-producto">
+${p.nombre}
+</span>
+
+<span class="empresa">
+Inventario Escolar
+</span>
+
+</td>
+
+<td>
+${p.categoria}
+</td>
+
+<td>
+${p.cantidad}
+${p.unidad}
+</td>
+
+<td>
+
+<span class="estado ${
+bajo
+?
+"bajo"
+:
+"normal"
+}">
+
+${
+bajo
+?
+"⚠ Stock bajo"
+:
+"✓ Normal"
+}
+
+</span>
+
+</td>
+
+<td>
+${p.ubicacion}
+</td>
+
+<td>
+${p.vencimiento}
+</td>
+
+<td>
+
+<!-- VER PRIMERO -->
+
+<button
+class="btn-detalles"
+onclick="verProducto('${p.codigo}')">
+
+Ver
+
+</button>
+
+<!-- BASURERO SOLO ICONO -->
+
+<button
+class="btn-eliminar"
+onclick="eliminarProducto('${p.codigo}')"
+title="Eliminar producto">
+
+🗑️
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+}).join("");
+
+}
+
+
+/* FILTRAR */
+
+function filtrar(){
+
+let texto=
+$("buscarProducto")
+.value
+.toLowerCase();
+
+let categoria=
+$("filtroCategoria")
+.value;
+
+let lista=
+productos.filter(p=>
+
+p.nombre
+.toLowerCase()
+.includes(texto)
+
+&&
+
+(
+!categoria ||
+p.categoria===categoria
+)
+
+);
+
+mostrarProductos(lista);
+
+}
+
+
+/* VER PRODUCTO */
+
+function verProducto(codigo){
+
+localStorage.setItem(
+"productoSeleccionado",
+codigo
+);
+
+window.location.href=
+"detalle.html";
+
+}
+
+
+/* ELIMINAR PRODUCTO */
+
+function eliminarProducto(codigo){
+
+let producto=
+productos.find(
+p=>p.codigo===codigo
+);
+
+if(!producto)return;
+
+let confirmar=
+confirm(
+"¿Deseas eliminar el producto \""+
+producto.nombre+
+"\" del catálogo?"
+);
+
+if(!confirmar)return;
+
+productos=
+productos.filter(
+p=>p.codigo!==codigo
+);
+
+guardar();
+
+if(
+localStorage.getItem(
+"productoSeleccionado"
+)===codigo
+){
+
+localStorage.removeItem(
+"productoSeleccionado"
+);
+
+}
+
+actualizarAlertas();
+
+catalogo();
+
+alert(
+"Producto eliminado correctamente."
+);
+
+}
+
+
+/* NUEVO PRODUCTO */
+
+$("cerrarModal").onclick=()=>{
+
+$("modalProducto")
+.classList
+.add("oculto");
+
+};
+
+
+$("formProducto").onsubmit=e=>{
+
+e.preventDefault();
+
+let p={
+
+codigo:
+"P"+
+String(
+productos.length+1
+).padStart(
+3,
+"0"
+),
+
+nombre:
+$("nombreProducto")
+.value
+.trim(),
+
+categoria:
+$("categoriaProducto")
+.value,
+
+cantidad:
+Number(
+$("cantidadProducto")
+.value
+),
+
+unidad:
+$("unidadProducto")
+.value,
+
+minimo:
+Number(
+$("minimoProducto")
+.value
+),
+
+ubicacion:
+$("ubicacionProducto")
+.value
+.trim(),
+
+vencimiento:
+$("vencimientoProducto")
+.value
+
+};
+
+productos.push(p);
+
+guardar();
+
+$("modalProducto")
+.classList
+.add("oculto");
+
+e.target.reset();
+
+actualizarAlertas();
+
+catalogo();
+
+alert(
+"Producto agregado correctamente."
+);
+
+};
+
+
+/* ALERTAS */
+
+function mostrarAlertas(){
+
+$("tituloModulo")
+.textContent=
+"Alertas";
+
+$("subtituloModulo")
+.textContent=
+"Productos que necesitan atención";
+
+let lista=
+alertas();
+
+$("contenidoModulo")
+.innerHTML=`
+
+<div class="encabezado-modulo">
+
+<span class="icono-grande">
+⚠️
+</span>
+
+<h2>
+Alertas de Inventario
+</h2>
+
+</div>
+
+<div class="cards">
+
+${
+lista.length
+
+?
+
+lista.map(p=>`
+
+<div class="card">
+
+<h3>
+⚠️ ${p.nombre}
+</h3>
+
+<p>
+Stock actual:
+<strong>
+${p.cantidad}
+${p.unidad}
+</strong>
+</p>
+
+<p>
+Stock mínimo:
+<strong>
+${p.minimo}
+${p.unidad}
+</strong>
+</p>
+
+</div>
+
+`).join("")
+
+:
+
+`
+
+<div class="card">
+
+<h3>
+✓ Todo está bien
+</h3>
+
+<p>
+No hay productos con stock bajo.
+</p>
+
+</div>
+
+`
+}
+
+</div>
+
+`;
+
+}
+
+
+/* ENTRADAS */
+
+function mostrarEntradas(){
+
+$("tituloModulo")
+.textContent=
+"Entradas";
+
+$("subtituloModulo")
+.textContent=
+"Productos que han ingresado al inventario";
+
+$("contenidoModulo")
+.innerHTML=`
+
+<div class="encabezado-modulo">
+
+<span class="icono-grande">
+📥
+</span>
+
+<h2>
+Entradas de Productos
+</h2>
+
+</div>
+
+<div class="card">
+
+<h3>
+Registrar entrada
+</h3>
+
+<p>
+Agrega productos al inventario.
+</p>
+
+<button
+id="btnNuevaEntrada"
+class="btn-nuevo"
+style="height:45px;margin-top:15px">
+
+＋ Nueva Entrada
+
+</button>
+
+<div
+id="formularioEntrada"
+class="oculto">
+
+<br>
+
+<label>
+Producto
+</label>
+
+<select
+id="productoEntrada"
+style="width:100%;height:42px;margin:8px 0 15px">
+
+<option value="">
+Seleccione un producto
+</option>
+
+${
+productos.map(p=>`
+
+<option value="${p.codigo}">
+
+${p.nombre}
+-
+Stock:
+${p.cantidad}
+${p.unidad}
+
+</option>
+
+`).join("")
+}
+
+</select>
+
+<label>
+Cantidad que ingresa
+</label>
+
+<input
+id="cantidadEntrada"
+type="number"
+min="1"
+placeholder="Ej. 10"
+style="width:100%;height:42px;margin:8px 0 15px">
+
+<label>
+Fecha de entrada
+</label>
+
+<input
+id="fechaEntrada"
+type="date"
+value="${fechaActual()}"
+style="width:100%;height:42px;margin:8px 0 15px">
+
+<label>
+Observación
+</label>
+
+<input
+id="observacionEntrada"
+type="text"
+placeholder="Ej. Compra de alimentos"
+style="width:100%;height:42px;margin:8px 0 15px">
+
+<button
+id="guardarEntrada"
+class="btn-guardar">
+
+✓ Registrar Entrada
+
+</button>
+
+<button
+id="cancelarEntrada"
+type="button"
+class="btn-cancelar">
+
+Cancelar
+
+</button>
+
+</div>
+
+</div>
+
+<div
+class="card"
+style="margin-top:20px">
+
+<h3>
+📋 Historial de Entradas
+</h3>
+
+${
+entradas.length
+
+?
+
+entradas
+.slice()
+.reverse()
+.map(e=>`
+
+<div class="notificacion-item">
+
+<span class="icono-notificacion">
+📥
+</span>
+
+<div class="texto-notificacion">
+
+<strong>
+${e.nombre}
+</strong>
+
+<span>
++${e.cantidad}
+${e.unidad}
+</span>
+
+<small>
+Fecha: ${e.fecha}
+</small>
+
+${
+e.observacion
+?
+`<small>${e.observacion}</small>`
+:
+""
+}
+
+</div>
+
+</div>
+
+`).join("")
+
+:
+
+`
+
+<p class="sin-notificaciones">
+
+No hay entradas registradas.
+
+</p>
+
+`
+}
+
+</div>
+
+`;
+
+$("btnNuevaEntrada").onclick=()=>{
+
+$("formularioEntrada")
+.classList
+.remove("oculto");
+
+};
+
+$("cancelarEntrada").onclick=()=>{
+
+$("formularioEntrada")
+.classList
+.add("oculto");
+
+};
+
+$("guardarEntrada").onclick=
+registrarEntrada;
+
+}
+
+
+/* REGISTRAR ENTRADA */
+
+function registrarEntrada(){
+
+let codigo=
+$("productoEntrada")
+.value;
+
+let cantidad=
+Number(
+$("cantidadEntrada")
+.value
+);
+
+let fecha=
+$("fechaEntrada")
+.value;
+
+let observacion=
+$("observacionEntrada")
+.value
+.trim();
+
+if(!codigo)
+return alert(
+"Seleccione un producto."
+);
+
+if(!cantidad || cantidad<=0)
+return alert(
+"Ingrese una cantidad válida."
+);
+
+if(!fecha)
+return alert(
+"Seleccione la fecha."
+);
+
+let producto=
+productos.find(
+p=>p.codigo===codigo
+);
+
+if(!producto)
+return alert(
+"No se encontró el producto."
+);
+
+producto.cantidad+=cantidad;
+
+entradas.push({
+
+codigo:
+producto.codigo,
+
+nombre:
+producto.nombre,
+
+cantidad,
+
+unidad:
+producto.unidad,
+
+fecha,
+
+observacion
+
+});
+
+guardar();
+
+actualizarAlertas();
+
+mostrarEntradas();
+
+alert(
+"✓ Entrada registrada correctamente."
+);
+
+}
+
+
+/* SALIDAS */
+
+function mostrarSalidas(){
+
+$("tituloModulo")
+.textContent=
+"Salidas";
+
+$("subtituloModulo")
+.textContent=
+"Registra los productos que salen del inventario";
+
+$("contenidoModulo")
+.innerHTML=`
+
+<div class="encabezado-modulo">
+
+<span class="icono-grande">
+📤
+</span>
+
+<h2>
+Salidas de Productos
+</h2>
+
+</div>
+
+<div class="card">
+
+<h3>
+Registrar producto vencido
+</h3>
+
+<p>
+Retira del inventario los alimentos vencidos.
+</p>
+
+<button
+id="btnNuevaSalida"
+class="btn-nuevo"
+style="height:45px;margin-top:15px">
+
+＋ Nueva Salida
+
+</button>
+
+<div
+id="formularioSalida"
+class="oculto">
+
+<br>
+
+<label>
+Producto
+</label>
+
+<select
+id="productoSalida"
+style="width:100%;height:42px;margin:8px 0 15px">
+
+<option value="">
+Seleccione un producto
+</option>
+
+${
+productos.map(p=>`
+
+<option value="${p.codigo}">
+
+${p.nombre}
+-
+Stock:
+${p.cantidad}
+${p.unidad}
+
+</option>
+
+`).join("")
+}
+
+</select>
+
+<label>
+Cantidad que sale
+</label>
+
+<input
+id="cantidadSalida"
+type="number"
+min="1"
+placeholder="Ej. 5"
+style="width:100%;height:42px;margin:8px 0 15px">
+
+<label>
+Fecha de salida
+</label>
+
+<input
+id="fechaSalida"
+type="date"
+value="${fechaActual()}"
+style="width:100%;height:42px;margin:8px 0 15px">
+
+<label>
+Motivo
+</label>
+
+<input
+id="motivoSalida"
+value="Producto vencido"
+readonly
+style="width:100%;height:42px;margin:8px 0 15px">
+
+<button
+id="guardarSalida"
+class="btn-guardar">
+
+✓ Registrar Salida
+
+</button>
+
+<button
+id="cancelarSalida"
+type="button"
+class="btn-cancelar">
+
+Cancelar
+
+</button>
+
+</div>
+
+</div>
+
+<div
+class="card"
+style="margin-top:20px">
+
+<h3>
+📋 Historial de Salidas
+</h3>
+
+${
+salidas.length
+
+?
+
+salidas
+.slice()
+.reverse()
+.map(s=>`
+
+<div class="notificacion-item">
+
+<span class="icono-notificacion">
+📤
+</span>
+
+<div class="texto-notificacion">
+
+<strong>
+${s.nombre}
+</strong>
+
+<span>
+-${s.cantidad}
+${s.unidad}
+</span>
+
+<small>
+Fecha: ${s.fecha}
+</small>
+
+<small>
+Motivo: ${s.motivo}
+</small>
+
+</div>
+
+</div>
+
+`).join("")
+
+:
+
+`
+
+<p class="sin-notificaciones">
+
+No hay salidas registradas.
+
+</p>
+
+`
+}
+
+</div>
+
+`;
+
+$("btnNuevaSalida").onclick=()=>{
+
+$("formularioSalida")
+.classList
+.remove("oculto");
+
+};
+
+$("cancelarSalida").onclick=()=>{
+
+$("formularioSalida")
+.classList
+.add("oculto");
+
+};
+
+$("guardarSalida").onclick=
+registrarSalida;
+
+}
+
+
+/* REGISTRAR SALIDA */
+
+function registrarSalida(){
+
+let codigo=
+$("productoSalida")
+.value;
+
+let cantidad=
+Number(
+$("cantidadSalida")
+.value
+);
+
+let fecha=
+$("fechaSalida")
+.value;
+
+if(!codigo)
+return alert(
+"Seleccione un producto."
+);
+
+if(!cantidad || cantidad<=0)
+return alert(
+"Ingrese una cantidad válida."
+);
+
+if(!fecha)
+return alert(
+"Seleccione la fecha."
+);
+
+let producto=
+productos.find(
+p=>p.codigo===codigo
+);
+
+if(!producto)
+return alert(
+"No se encontró el producto."
+);
+
+if(cantidad>producto.cantidad)
+return alert(
+"No puede retirar más producto del que existe."
+);
+
+producto.cantidad-=cantidad;
+
+salidas.push({
+
+codigo:
+producto.codigo,
+
+nombre:
+producto.nombre,
+
+cantidad,
+
+unidad:
+producto.unidad,
+
+fecha,
+
+motivo:
+"Producto vencido"
+
+});
+
+guardar();
+
+actualizarAlertas();
+
+mostrarSalidas();
+
+alert(
+"✓ Salida registrada correctamente."
+);
+
+}
+
+
+/* CONFIGURACION */
+
+function configuracion(){
+
+$("tituloModulo")
+.textContent=
+"Configuración";
+
+$("subtituloModulo")
+.textContent=
+"Configuración del sistema";
+
+$("contenidoModulo")
+.innerHTML=`
+
+<div class="encabezado-modulo">
+
+<span class="icono-grande">
+⚙️
+</span>
+
+<h2>
+Configuración
+</h2>
+
+</div>
+
+<div class="card">
+
+<h3>
+⚙️ Inventario Escolar
+</h3>
+
+<p>
+Sistema de control de inventario.
+</p>
+
+</div>
+
+`;
+
+}
+
+
+/* INICIO */
+
+actualizarPerfil();
+
+actualizarAlertas();
+
+catalogo();
+
+</script>
+
+</body>
+</html>

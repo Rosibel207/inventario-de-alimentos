@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventario Escolar - Reportes de Entradas</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <button class="menu-toggle" id="menuToggle">☰</button>
+
+    <div class="overlay" id="overlay"></div>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="logo-section" style="display: flex; align-items: center; gap: 10px;">
+        <img src="https://tse3.mm.bing.net/th/id/OIP.YmIOGyQ215MnMmocs-6WnAHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Logo Instituto" style="width: 45px; height: 45px; object-fit: contain;">
+        <h2>Inventario<br><span>Escolar</span></h2>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="panel.html" class="nav-item">📊 Panel de Control</a>
+        <a href="catalogo.html" class="nav-item">📋 Catálogo</a>
+        <a href="#" class="nav-item">⚠️ Alertas</a>
+        <a href="#" class="nav-item active">⬆️ Entradas</a>
+        <a href="Index1.html" class="nav-item">⬇️ Salidas</a>
+        <a href="#" class="nav-item">⚙️ Configuración</a>
+      </nav>
+
+      <div class="logout">
+        <a href="#">🟧 Cerrar Sesión</a>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="top-header">
+        <div>
+          <h1>Reportes de Entradas</h1>
+          <p class="subtitle">Sistema de Control de Alimentos Escolares</p>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 20px;">
+          
+          <!-- NOTIFICACIONES -->
+          <div style="position: relative;">
+            <button id="bellBtn" style="background: none; border: none; cursor: pointer; position: relative; font-size: 20px; padding: 5px;">
+              🔔
+              <span style="position: absolute; top: 0; right: 0; background-color: #e11d48; color: white; font-size: 10px; font-weight: bold; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">5</span>
+            </button>
+
+            <div id="bellDropdown" style="display: none; position: absolute; right: 0; top: 45px; background-color: #ffffff; width: 280px; box-shadow: 0px 10px 25px rgba(0,0,0,0.15); border-radius: 12px; padding: 16px; z-index: 1000; color: #333; text-align: left; border: 1px solid #f1f5f9;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <strong style="font-size: 15px; color: #0f172a;">Notificaciones</strong>
+                <span style="font-size: 12px; color: #64748b;">5 alertas</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 12px; background-color: #f8fafc; padding: 10px; border-radius: 8px;">
+                <span style="font-size: 16px; background-color: #fef3c7; padding: 8px; border-radius: 6px;">⚠️</span>
+                <div>
+                  <strong style="display: block; font-size: 14px; color: #1e293b;">Stock bajo</strong>
+                  <span style="font-size: 12px; color: #64748b;">Revisar inventario</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BOTÓN DE USUARIO Y DESPLEGABLE -->
+          <div style="position: relative;">
+            <button id="userBtn" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 6px 12px; background-color: #f1f5f9; border-radius: 20px;">
+              <div class="avatar" style="font-size: 18px;">👤</div>
+              <div style="text-align: left; line-height: 1.2;">
+                <!-- AQUÍ SE MOSTRARÁ EL CORREO DEL LOGIN -->
+                <span id="navUserEmail" style="display: block; font-weight: bold; font-size: 13px; color: #0f172a;">admin@instituto.com</span>
+                <span style="font-size: 11px; color: #64748b;">Administrador</span>
+              </div>
+              <span style="font-size: 12px; color: #64748b;">▾</span>
+            </button>
+
+            <div id="userDropdown" style="display: none; position: absolute; right: 0; top: 50px; background-color: #ffffff; width: 240px; box-shadow: 0px 10px 25px rgba(0,0,0,0.15); border-radius: 12px; padding: 8px 0; z-index: 1000; color: #333; text-align: left; border: 1px solid #f1f5f9;">
+              <div style="padding: 10px 16px; border-bottom: 1px solid #f1f5f9; margin-bottom: 4px;">
+                <strong id="dropUserEmail" style="display: block; color: #0f172a; font-size: 14px;">admin@instituto.com</strong>
+              </div>
+              <a href="#" style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; color: #333; text-decoration: none; font-size: 14px;">👤 Mi cuenta</a>
+              <a href="#" style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; color: #333; text-decoration: none; font-size: 14px;">➕ Agregar cuenta</a>
+              <a href="#" style="display: flex; align-items: center; gap: 10px; padding: 10px 16px; color: #333; text-decoration: none; font-size: 14px;">🚪 Cambiar cuenta</a>
+            </div>
+          </div>
+
+        </div>
+      </header>
+
+      <section class="charts-grid">
+        <div class="card chart-card">
+          <h3>Entradas de alimentos</h3>
+          <div class="chart-container">
+            <canvas id="lineChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card chart-card">
+          <h3>Productos recibidos</h3>
+          <div class="chart-container donut-box">
+            <canvas id="donutChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <section class="card table-card">
+        <div class="table-header">
+          <h3>Registro de Entradas</h3>
+          <div class="table-actions">
+            <input type="text" placeholder="🔎 Filtrar..." class="search-input">
+            <button id="openModalBtn" class="btn-add" type="button">+ Agregar</button>
+          </div>
+        </div>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Proveedor</th>
+              <th>Responsable</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Leche Entera</td>
+              <td class="text-green">60 L</td>
+              <td>26 May 2026</td>
+              <td>12:30</td>
+              <td>Distribuidora Lácteos S.A.</td>
+              <td>Ma. Antonieta López</td>
+              <td><button class="btn-delete">🗑️</button></td>
+            </tr>
+            <tr>
+              <td>Aceite Vegetal</td>
+              <td class="text-green">24 L</td>
+              <td>26 May 2026</td>
+              <td>11:00</td>
+              <td>Distribuidora Central</td>
+              <td>Ma. Antonieta López</td>
+              <td><button class="btn-delete">🗑️</button></td>
+            </tr>
+            <tr>
+              <td>Arroz Blanco</td>
+              <td class="text-green">40 Kg</td>
+              <td>24 May 2026</td>
+              <td>11:45</td>
+              <td>Alimentos Escolares Ltda</td>
+              <td>Ma. Antonieta López</td>
+              <td><button class="btn-delete">🗑️</button></td>
+            </tr>
+            <tr>
+              <td>Leche Entera</td>
+              <td class="text-green">60 L</td>
+              <td>22 May 2026</td>
+              <td>12:30</td>
+              <td>Distribuidora Lácteos S.A.</td>
+              <td>Ma. Antonieta López</td>
+              <td><button class="btn-delete">🗑️</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL DE AGREGAR PRODUCTO -->
+  <div id="addProductModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;">
+    <div style="background-color: white; padding: 24px; border-radius: 12px; width: 400px; box-shadow: 0px 10px 25px rgba(0,0,0,0.2); text-align: left;">
+      <h3 style="margin-bottom: 15px; color: #0f172a;">Agregar Nuevo Producto</h3>
+      
+      <form id="addProductForm" style="display: flex; flex-direction: column; gap: 12px;">
+        <div>
+          <label style="font-size: 13px; color: #64748b; display: block; margin-bottom: 4px;">Producto</label>
+          <input type="text" id="inputProducto" required style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+        </div>
+        <div>
+          <label style="font-size: 13px; color: #64748b; display: block; margin-bottom: 4px;">Cantidad</label>
+          <input type="text" id="inputCantidad" required placeholder="Ej: 50 L o 30 Kg" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+        </div>
+        <div>
+          <label style="font-size: 13px; color: #64748b; display: block; margin-bottom: 4px;">Fecha</label>
+          <input type="text" id="inputFecha" required placeholder="Ej: 27 May 2026" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+        </div>
+        <div>
+          <label style="font-size: 13px; color: #64748b; display: block; margin-bottom: 4px;">Hora</label>
+          <input type="text" id="inputHora" required placeholder="Ej: 14:00" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+        </div>
+        <div>
+          <label style="font-size: 13px; color: #64748b; display: block; margin-bottom: 4px;">Proveedor</label>
+          <input type="text" id="inputProveedor" required style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+        </div>
+        <div>
+          <label style="font-size: 13px; color: #64748b; display: block; margin-bottom: 4px;">Responsable</label>
+          <input type="text" id="inputResponsable" value="Ma. Antonieta López" required style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+          <button type="button" id="cancelModalBtn" style="padding: 8px 16px; background-color: #e2e8f0; border: none; border-radius: 6px; cursor: pointer;">Cancelar</button>
+          <button type="submit" style="padding: 8px 16px; background-color: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+

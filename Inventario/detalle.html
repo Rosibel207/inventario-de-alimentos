@@ -1,0 +1,3781 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Inventario Escolar - Detalle del Producto</title>
+
+  <link rel="stylesheet" href="./output.css">
+
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+
+    :root {
+      --bg-main: #f3f5f9;
+      --sidebar-bg: #ffffff;
+      --card-bg: #ffffff;
+      --text-dark: #1e293b;
+      --text-muted: #64748b;
+      --input-bg: #f1f5f9;
+      --border-color: #e2e8f0;
+
+      --btn-panel: #4f46e5;
+      --btn-catalogo: #0d9488;
+      --btn-alertas: #f97316;
+      --btn-entradas: #0284c7;
+      --btn-salidas: #7c3aed;
+      --btn-config: #475569;
+
+      --act-blue: #0066ff;
+      --act-purple: #7c3aed;
+      --act-teal: #00bba7;
+      --act-coral: #ff6b6b;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-dark);
+    }
+
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    /* =========================
+       SIDEBAR
+       ========================= */
+
+    .sidebar {
+      width: 70px;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      transition: width 0.3s ease-in-out;
+      background-color: transparent;
+      flex-shrink: 0;
+    }
+
+    .sidebar.expanded {
+      width: 260px;
+    }
+
+    .hamburger-toggle-btn {
+      width: 45px;
+      height: 45px;
+      background-color: var(--btn-panel);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .hamburger-toggle-btn:hover {
+      background-color: #3b31d8;
+    }
+
+    .menu-desplegable {
+      max-height: 0;
+      width: 100%;
+      overflow: hidden;
+      transition: max-height 0.4s ease-in-out, opacity 0.3s ease;
+      opacity: 0;
+      background-color: var(--sidebar-bg);
+      border-radius: 12px;
+    }
+
+    .menu-desplegable.active {
+      max-height: 800px;
+      opacity: 1;
+      border: 1px solid var(--border-color);
+      padding: 16px;
+      margin-top: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .brand-logo-img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
+    .brand h2 {
+      font-size: 1rem;
+      color: #1e1b4b;
+      line-height: 1.1;
+    }
+
+    .brand h2 span {
+      color: #b91c1c;
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-bottom: 12px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      white-space: nowrap;
+    }
+
+    .btn-panel {
+      background-color: var(--btn-panel);
+    }
+
+    .btn-catalogo {
+      background-color: var(--btn-catalogo);
+    }
+
+    .btn-alertas {
+      background-color: var(--btn-alertas);
+    }
+
+    .btn-entradas {
+      background-color: var(--btn-entradas);
+    }
+
+    .btn-salidas {
+      background-color: var(--btn-salidas);
+    }
+
+    .btn-config {
+      background-color: var(--btn-config);
+    }
+
+    .sidebar-footer {
+      padding-top: 8px;
+    }
+
+    .logout-btn {
+      width: 100%;
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* =========================
+       CONTENIDO
+       ========================= */
+
+    .main-content {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 32px 16px 12px;
+    }
+
+    .selector-producto-demo label {
+      font-size: 0.85rem;
+      color: #828ba2;
+      font-weight: 700;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .selector-producto-demo select {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: white;
+      color: var(--text-dark);
+      font-weight: 600;
+      outline: none;
+    }
+
+    .user-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .icon-btn {
+      position: relative;
+      background: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+    }
+
+    .badge {
+      position: absolute;
+      top: -4px;
+      right: -2px;
+      background: #ff4d4d;
+      color: white;
+      font-size: 0.65rem;
+      border-radius: 50%;
+      padding: 2px 5px;
+    }
+
+    .user-dropdown {
+      position: relative;
+    }
+
+    .user-btn {
+      background: white;
+      border: 1px solid var(--border-color);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .admin-menu-dropdown {
+      position: absolute;
+      right: 0;
+      top: 42px;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      width: 220px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: none;
+      flex-direction: column;
+      z-index: 100;
+      overflow: hidden;
+    }
+
+    .admin-menu-dropdown.active {
+      display: flex;
+    }
+
+    .admin-menu-info {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-color);
+      background: #f8fafc;
+    }
+
+    .admin-menu-info strong {
+      display: block;
+      color: #1e293b;
+      margin-bottom: 3px;
+    }
+
+    .admin-menu-info small {
+      color: #64748b;
+      word-break: break-word;
+    }
+
+    .admin-menu-dropdown a {
+      padding: 10px 14px;
+      color: var(--text-dark);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .admin-menu-dropdown a:hover {
+      background-color: var(--input-bg);
+    }
+
+    /* =========================
+       DETALLE
+       ========================= */
+
+    .details-container {
+      padding: 0 32px 32px 12px;
+    }
+
+    .breadcrumb a {
+      color: #d9383a;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .details-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 12px 0 20px 0;
+    }
+
+    .details-header h1 {
+      font-size: 1.8rem;
+      color: #1e293b;
+    }
+
+    .subtitle {
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      background: white;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-outline-blue {
+      border: 1.5px solid #0066ff;
+      color: #0066ff;
+    }
+
+    .btn-outline-red {
+      border: 1.5px solid #ff4d4d;
+      color: #ff4d4d;
+    }
+
+    .editable-field {
+      background-color: #ffffff !important;
+      border: 1.5px solid #0066ff !important;
+      color: #1e293b !important;
+    }
+
+    /* =========================
+       BANNER
+       ========================= */
+
+    .stock-banner {
+      background-color: #fff0f0;
+      border: 1px solid #ffd1d1;
+      border-radius: 10px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .banner-icon {
+      color: #ff4d4d;
+      font-size: 1.5rem;
+    }
+
+    .banner-info {
+      flex: 1;
+      color: #ff4d4d;
+      font-size: 0.9rem;
+    }
+
+    .btn-dismiss {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      color: #ff4d4d;
+      cursor: pointer;
+    }
+
+    /* =========================
+       TARJETAS
+       ========================= */
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      color: #1e293b;
+      margin-bottom: 16px;
+    }
+
+    .field-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background-color: var(--input-bg);
+      color: #334155;
+      font-weight: 500;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .progress-section {
+      margin-top: 20px;
+    }
+
+    .progress-section label {
+      font-size: 0.75rem;
+      color: #0066ff;
+      font-weight: 700;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background-color: #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 19%;
+      background-color: #ff4d4d;
+      border-radius: 10px;
+    }
+
+    .summary-details p {
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      color: #475569;
+    }
+
+    .badge-status-warn {
+      background-color: #fef08a;
+      color: #854d0e;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .quick-actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .btn-action {
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      color: white;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .btn-blue-fill {
+      background-color: var(--act-blue);
+    }
+
+    .btn-purple-fill {
+      background-color: var(--act-purple);
+    }
+
+    .btn-teal-fill {
+      background-color: var(--act-teal);
+    }
+
+    .btn-coral-fill {
+      background-color: var(--act-coral);
+    }
+
+    textarea {
+      resize: none;
+      height: 75px;
+    }
+
+    .btn-save-notes {
+      margin-top: 12px;
+      float: right;
+      padding: 8px 16px;
+    }
+
+    /* =========================
+       MODAL
+       ========================= */
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+
+    .modal-card {
+      background: white;
+      width: 440px;
+      max-width: 90%;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 900px) {
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .details-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+<div class="app-container">
+
+  <!-- =========================
+       BARRA LATERAL
+       ========================= -->
+
+  <aside class="sidebar" id="sidebar">
+
+    <button
+      class="hamburger-toggle-btn"
+      id="hamburger-btn"
+      onclick="toggleMenuHamburguesa()">
+
+      <i class="fa-solid fa-bars"></i>
+
+    </button>
+
+    <div
+      class="menu-desplegable"
+      id="menu-desplegable">
+
+      <div class="brand">
+
+        <img
+          src="img/instituto.jpg"
+          alt="Logo Instituto"
+          class="brand-logo-img">
+
+        <h2>
+          Inventario<br>
+          <span>Escolar</span>
+        </h2>
+
+      </div>
+
+      <nav class="nav-menu">
+
+        <a
+          href="panel.html"
+          class="nav-item btn-panel">
+
+          <i class="fa-solid fa-border-all"></i>
+
+          Panel de Control
+
+        </a>
+
+        <a
+          href="catalogo.html"
+          class="nav-item btn-catalogo">
+
+          <i class="fa-solid fa-list-check"></i>
+
+          Catálogo
+
+        </a>
+
+        <a
+          href="#"
+          class="nav-item btn-alertas"
+          onclick="abrirModalAlertas(); return false;">
+
+          <i class="fa-solid fa-triangle-exclamation"></i>
+
+          Alertas
+
+        </a>
+
+        <a
+          href="indext.html"
+          class="nav-item btn-entradas">
+
+          <i class="fa-solid fa-arrow-up"></i>
+
+          Entradas
+
+        </a>
+
+        <a
+          href="Index1.html"
+          class="nav-item btn-salidas">
+
+          <i class="fa-solid fa-arrow-down"></i>
+
+          Salidas
+
+        </a>
+
+        <a
+          href="#"
+          class="nav-item btn-config"
+          onclick="mostrarSeccion('Configuración'); return false;">
+
+          <i class="fa-solid fa-gear"></i>
+
+          Configuración
+
+        </a>
+
+      </nav>
+
+      <div class="sidebar-footer">
+
+        <button
+          class="logout-btn"
+          onclick="cerrarSesion()">
+
+          <i class="fa-solid fa-right-from-bracket"></i>
+
+          Cerrar Sesión
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </aside>
+
+
+  <!-- =========================
+       CONTENIDO PRINCIPAL
+       ========================= -->
+
+  <main class="main-content">
+
+    <header class="top-bar">
+
+      <div class="left-top">
+
+        <div class="selector-producto-demo">
+
+          <label for="select-producto">
+            Seleccionar Producto:
+          </label>
+
+          <select id="select-producto">
+
+            <option value="P001">
+              P001 - Frijoles
+            </option>
+
+            <option value="P002">
+              P002 - Leche
+            </option>
+
+            <option value="P003">
+              P003 - Arroz
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <div class="user-actions">
+
+        <div
+          class="icon-btn"
+          id="btn-notificaciones"
+          onclick="abrirModalAlertas()"
+          title="Alertas de Stock">
+
+          <i class="fa-regular fa-bell"></i>
+
+          <span
+            class="badge"
+            id="alert-count">
+            2
+          </span>
+
+        </div>
+
+
+        <div class="user-dropdown">
+
+          <button
+            class="user-btn"
+            onclick="toggleAdminMenu()">
+
+            <i class="fa-solid fa-user-circle"></i>
+
+            <span id="nombre-usuario-activo">
+              Admin
+            </span>
+
+            <i class="fa-solid fa-chevron-down"></i>
+
+          </button>
+
+
+          <div
+            class="admin-menu-dropdown"
+            id="admin-dropdown">
+
+            <div class="admin-menu-info">
+
+              <strong id="menu-nombre-cuenta">
+                Admin
+              </strong>
+
+              <small id="menu-correo-cuenta">
+                admin@instituto.com
+              </small>
+
+              <small
+                id="menu-rol-cuenta"
+                style="display:block;margin-top:3px;">
+                Administrador
+              </small>
+
+            </div>
+
+            <a
+              href="#"
+              onclick="abrirModalMiCuenta(); return false;">
+
+              <i class="fa-solid fa-user"></i>
+
+              Mi cuenta
+
+            </a>
+
+            <a
+              href="#"
+              onclick="abrirModalAgregarCuenta(); return false;">
+
+              <i class="fa-solid fa-user-plus"></i>
+
+              Agregar Cuenta
+
+            </a>
+
+
+            <a
+              href="#"
+              onclick="abrirModalCambiarCuenta(); return false;">
+
+              <i class="fa-solid fa-users-gear"></i>
+
+              Cambiar Cuenta
+
+            </a>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <!-- =========================
+         DETALLE DEL PRODUCTO
+         ========================= -->
+
+    <section class="details-container">
+
+      <div class="breadcrumb">
+
+        <a href="catalogo.html">
+          &lt; Volver al catálogo
+        </a>
+
+      </div>
+
+
+      <div class="details-header">
+
+        <div>
+
+          <h1>
+            Detalle del Producto
+          </h1>
+
+          <p class="subtitle">
+            Información completa del producto
+          </p>
+
+        </div>
+
+
+        <div class="action-buttons">
+
+          <button
+            class="btn btn-outline-blue"
+            id="btn-editar"
+            onclick="toggleModoEdicion()">
+
+            <i class="fa-solid fa-pen-to-square"></i>
+
+            Editar
+
+          </button>
+
+
+          <button
+            class="btn btn-outline-red"
+            onclick="eliminarProducto()">
+
+            <i class="fa-solid fa-trash"></i>
+
+            Eliminar
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="stock-banner"
+        id="stock-warning">
+
+        <i class="fa-solid fa-triangle-exclamation banner-icon"></i>
+
+        <div class="banner-info">
+
+          <strong>
+            Stock por debajo del mínimo
+          </strong>
+
+          <br>
+
+          <span>
+
+            Cantidad actual:
+
+            <b id="banner-cant">
+              15 Kg/Unid
+            </b>
+
+            (Mínimo:
+
+            <b id="banner-min">
+              20 Kg/Unid
+            </b>)
+
+          </span>
+
+        </div>
+
+        <button
+          class="btn-dismiss"
+          onclick="descartarBanner()">
+
+          &times;
+
+        </button>
+
+      </div>
+
+
+      <div class="info-grid">
+
+
+        <div class="card">
+
+          <h3>
+            Información General
+          </h3>
+
+          <div class="field-grid-2">
+
+            <div>
+
+              <label>
+                Nombre del Producto
+              </label>
+
+              <input
+                type="text"
+                id="p-nombre"
+                readonly>
+
+            </div>
+
+
+            <div>
+
+              <label>
+                Categoría
+              </label>
+
+              <input
+                type="text"
+                id="p-categoria"
+                readonly>
+
+            </div>
+
+
+            <div>
+
+              <label>
+                Proveedor
+              </label>
+
+              <input
+                type="text"
+                id="p-proveedor"
+                readonly>
+
+            </div>
+
+
+            <div>
+
+              <label>
+                Ubicación
+              </label>
+
+              <input
+                type="text"
+                id="p-ubicacion"
+                readonly>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <h3>
+            Inventario
+          </h3>
+
+          <div class="metrics-row">
+
+            <div>
+
+              <label>
+                Cantidad Actual
+              </label>
+
+              <input
+                type="number"
+                id="p-cantidad"
+                readonly>
+
+            </div>
+
+
+            <div>
+
+              <label>
+                Stock Mínimo
+              </label>
+
+              <input
+                type="number"
+                id="p-minimo"
+                readonly>
+
+            </div>
+
+
+            <div>
+
+              <label>
+                Stock Máximo
+              </label>
+
+              <input
+                type="number"
+                id="p-maximo"
+                readonly>
+
+            </div>
+
+          </div>
+
+
+          <div class="progress-section">
+
+            <label>
+
+              Nivel de stock
+
+              <span id="progress-text">
+                19%
+              </span>
+
+            </label>
+
+
+            <div class="progress-bar">
+
+              <div
+                class="progress-fill"
+                id="progress-fill">
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <h3>
+            Información Adicional
+          </h3>
+
+          <div class="field-grid-2">
+
+
+            <div>
+
+              <label>
+                Precio Unitario ($)
+              </label>
+
+              <input
+                type="number"
+                step="0.01"
+                id="p-precio"
+                readonly>
+
+            </div>
+
+
+            <div>
+
+              <label>
+                Valor Total ($)
+              </label>
+
+              <input
+                type="text"
+                id="p-valortotal"
+                readonly>
+
+            </div>
+
+
+            <div>
+
+              <label>
+                Fecha de Vencimiento
+              </label>
+
+              <input
+                type="date"
+                id="p-vencimiento"
+                readonly>
+
+            </div>
+
+
+            <div>
+
+              <label>
+                Última Actualización
+              </label>
+
+              <input
+                type="text"
+                id="p-actualizacion"
+                readonly>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <h3>
+            Resumen
+          </h3>
+
+          <div class="summary-details">
+
+            <p>
+
+              <span>ID Producto:</span>
+
+              <strong id="p-id">
+                P001
+              </strong>
+
+            </p>
+
+
+            <p>
+
+              <span>Estado:</span>
+
+              <span
+                class="badge-status-warn"
+                id="p-estado">
+
+                Stock bajo
+
+              </span>
+
+            </p>
+
+
+            <p>
+
+              <span>Ocupación:</span>
+
+              <strong id="p-ocupacion">
+                19%
+              </strong>
+
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <h3>
+            Acciones Rápidas
+          </h3>
+
+          <div class="quick-actions-grid">
+
+            <button
+              class="btn-action btn-blue-fill"
+              onclick="abrirModalTransaccion('Entrada')">
+
+              Registrar Entrada
+
+            </button>
+
+
+            <button
+              class="btn-action btn-purple-fill"
+              onclick="abrirModalTransaccion('Salida')">
+
+              Registrar Salida
+
+            </button>
+
+
+            <button
+              class="btn-action btn-teal-fill"
+              onclick="generarReporte()">
+
+              Generar Reporte
+
+            </button>
+
+
+            <button
+              class="btn-action btn-coral-fill"
+              onclick="verHistorial()">
+
+              Ver Historial
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <h3>
+            Notas
+          </h3>
+
+          <textarea
+            id="p-notas"
+            placeholder="Escribe observaciones del producto...">
+          </textarea>
+
+
+          <button
+            class="btn-action btn-blue-fill btn-save-notes"
+            onclick="guardarNotas()">
+
+            Guardar Notas
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+
+<!-- =========================
+     MODAL
+     ========================= -->
+
+<div
+  class="modal-overlay"
+  id="modal-overlay">
+
+  <div class="modal-card">
+
+    <div class="modal-header">
+
+      <h3 id="modal-titulo">
+        Título Modal
+      </h3>
+
+      <button
+        class="close-modal"
+        onclick="cerrarModal()">
+
+        &times;
+
+      </button>
+
+    </div>
+
+    <div
+      class="modal-body"
+      id="modal-body">
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   PRODUCTOS POR DEFECTO
+   ===================================================== */
+
+const productosPorDefecto = {
+
+  P001: {
+    id: "P001",
+    nombre: "Frijoles",
+    categoria: "Granos",
+    proveedor: "Distribuidora de Alimentos",
+    ubicacion: "Estante 1",
+    cantidad: 15,
+    min: 20,
+    max: 100,
+    precio: 1.25,
+    vencimiento: "2027-03-15",
+    actualizacion: "2026-08-20",
+    notas: "Mantener en un lugar fresco y seco.",
+    historial: []
+  },
+
+  P002: {
+    id: "P002",
+    nombre: "Leche",
+    categoria: "Lácteos",
+    proveedor: "Lácteos S.A.",
+    ubicacion: "Almacén B - Frío",
+    cantidad: 40,
+    min: 20,
+    max: 100,
+    precio: 1.50,
+    vencimiento: "2027-02-15",
+    actualizacion: "2026-08-20",
+    notas: "Mantener refrigerada.",
+    historial: []
+  },
+
+  P003: {
+    id: "P003",
+    nombre: "Arroz",
+    categoria: "Granos",
+    proveedor: "Granos del Sur",
+    ubicacion: "Estante 4",
+    cantidad: 90,
+    min: 30,
+    max: 200,
+    precio: 0.90,
+    vencimiento: "2027-08-01",
+    actualizacion: "2026-08-20",
+    notas: "Mantener en un lugar seco.",
+    historial: []
+  }
+
+};
+
+
+/* =====================================================
+   CARGAR PRODUCTOS
+   ===================================================== */
+
+let productosGuardados =
+  localStorage.getItem("productosInventario");
+
+let productos;
+
+if (productosGuardados) {
+
+  try {
+
+    productos =
+      JSON.parse(productosGuardados);
+
+  } catch (error) {
+
+    productos =
+      JSON.parse(
+        JSON.stringify(productosPorDefecto)
+      );
+
+  }
+
+} else {
+
+  productos =
+    JSON.parse(
+      JSON.stringify(productosPorDefecto)
+    );
+
+}
+
+
+function guardarProductosLocalStorage() {
+
+  localStorage.setItem(
+    "productosInventario",
+    JSON.stringify(productos)
+  );
+
+}
+
+
+if (!localStorage.getItem("productosInventario")) {
+
+  guardarProductosLocalStorage();
+
+}
+
+
+/* =====================================================
+   CUENTAS
+   ===================================================== */
+
+let cuentas =
+  JSON.parse(
+    localStorage.getItem("cuentasInventario")
+  ) || [];
+
+let cuentaActivaId =
+  localStorage.getItem(
+    "cuentaActivaInventario"
+  );
+
+let cuentaEditandoId = null;
+
+
+/* =====================================================
+   CREAR CUENTA INICIAL
+   ===================================================== */
+
+if (cuentas.length === 0) {
+
+  const cuentaInicial = {
+
+    id: Date.now().toString(),
+
+    nombre: "Admin",
+
+    correo: "admin@instituto.com",
+
+    rol: "Administrador",
+
+    foto: ""
+
+  };
+
+  cuentas.push(
+    cuentaInicial
+  );
+
+  cuentaActivaId =
+    cuentaInicial.id;
+
+  guardarCuentas();
+
+}
+
+
+/* =====================================================
+   COMPROBAR CUENTA ACTIVA
+   ===================================================== */
+
+if (
+  !cuentaActivaId ||
+  !cuentas.some(
+    cuenta =>
+      cuenta.id === cuentaActivaId
+  )
+) {
+
+  cuentaActivaId =
+    cuentas[0].id;
+
+  guardarCuentas();
+
+}
+
+
+/* =====================================================
+   GUARDAR CUENTAS
+   ===================================================== */
+
+function guardarCuentas() {
+
+  localStorage.setItem(
+    "cuentasInventario",
+    JSON.stringify(cuentas)
+  );
+
+  localStorage.setItem(
+    "cuentaActivaInventario",
+    cuentaActivaId
+  );
+
+}
+
+
+/* =====================================================
+   OBTENER CUENTA ACTIVA
+   ===================================================== */
+
+function obtenerCuentaActiva() {
+
+  return cuentas.find(
+    cuenta =>
+      cuenta.id === cuentaActivaId
+  );
+
+}
+
+
+/* =====================================================
+   ACTUALIZAR CUENTA EN PANTALLA
+   ===================================================== */
+
+function actualizarCuentaActiva() {
+
+  const cuenta =
+    obtenerCuentaActiva();
+
+  if (!cuenta) return;
+
+
+  document.getElementById(
+    "nombre-usuario-activo"
+  ).textContent =
+    cuenta.nombre;
+
+
+  document.getElementById(
+    "menu-nombre-cuenta"
+  ).textContent =
+    cuenta.nombre;
+
+
+  document.getElementById(
+    "menu-correo-cuenta"
+  ).textContent =
+    cuenta.correo;
+
+
+  document.getElementById(
+    "menu-rol-cuenta"
+  ).textContent =
+    cuenta.rol;
+
+}
+
+
+/* =====================================================
+   ALERTAS
+   ===================================================== */
+
+let alertas =
+  JSON.parse(
+    localStorage.getItem("alertasInventario")
+  ) || [
+
+    {
+      id: 1,
+      mensaje:
+        "P001 - Frijoles: Stock por debajo del mínimo."
+    },
+
+    {
+      id: 2,
+      mensaje:
+        "P002 - Leche: Revisar fecha de vencimiento."
+    }
+
+  ];
+
+
+function guardarAlertas() {
+
+  localStorage.setItem(
+    "alertasInventario",
+    JSON.stringify(alertas)
+  );
+
+}
+
+
+/* =====================================================
+   PRODUCTO ACTUAL
+   ===================================================== */
+
+let productoActual =
+  localStorage.getItem("productoSeleccionado")
+  || "P001";
+
+let modoEdicion = false;
+
+/* =====================================================
+   SINCRONIZAR PRODUCTOS DEL CATÁLOGO
+   ===================================================== */
+
+function sincronizarProductosDesdeCatalogo() {
+
+  const datosCatalogo =
+    localStorage.getItem("productos");
+
+  if (!datosCatalogo) return;
+
+  try {
+
+    const productosCatalogo =
+      JSON.parse(datosCatalogo);
+
+    if (!Array.isArray(productosCatalogo)) return;
+
+    productosCatalogo.forEach(function(pc) {
+
+      if (!pc.codigo) return;
+
+      const anterior =
+        productos[pc.codigo] || {};
+
+      productos[pc.codigo] = {
+        ...anterior,
+        id: pc.codigo,
+        nombre: pc.nombre || "",
+        categoria: pc.categoria || "",
+        ubicacion: pc.ubicacion || "",
+        cantidad: Number(pc.cantidad) || 0,
+        min: Number(pc.minimo) || 0,
+        vencimiento: pc.vencimiento || "",
+        unidad: pc.unidad || anterior.unidad || "",
+        max: anterior.max || 0,
+        proveedor: anterior.proveedor || "",
+        precio: anterior.precio || 0,
+        actualizacion: anterior.actualizacion || "",
+        notas: anterior.notas || "",
+        historial: Array.isArray(anterior.historial)
+          ? anterior.historial
+          : []
+      };
+
+    });
+
+    actualizarSelectorProductos();
+
+  } catch (error) {
+
+    console.error(
+      "Error al sincronizar productos del catálogo:",
+      error
+    );
+
+  }
+
+}
+
+function actualizarSelectorProductos() {
+
+  const selector =
+    document.getElementById("select-producto");
+
+  if (!selector) return;
+
+  const seleccionado = productoActual;
+
+  selector.innerHTML = "";
+
+  Object.values(productos).forEach(function(p) {
+
+    if (!p.id) return;
+
+    const option =
+      document.createElement("option");
+
+    option.value = p.id;
+    option.textContent = `${p.id} - ${p.nombre}`;
+
+    selector.appendChild(option);
+
+  });
+
+  if (productos[seleccionado]) {
+    selector.value = seleccionado;
+  }
+
+}
+
+window.addEventListener(
+  "storage",
+  function(e) {
+
+    if (e.key === "productos") {
+
+      sincronizarProductosDesdeCatalogo();
+
+      if (productos[productoActual]) {
+        cargarDatosProducto(productoActual);
+      }
+
+      actualizarContadorAlertas();
+
+    }
+
+  }
+);
+
+setInterval(
+  function() {
+    sincronizarProductosDesdeCatalogo();
+  },
+  1000
+);
+
+
+/* =====================================================
+   CARGAR AL INICIAR
+   ===================================================== */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
+
+    
+    sincronizarProductosDesdeCatalogo();
+
+if (!productos[productoActual]) {
+
+      productoActual = "P001";
+
+      localStorage.setItem(
+        "productoSeleccionado",
+        productoActual
+      );
+
+    }
+
+
+    cargarDatosProducto(
+      productoActual
+    );
+
+
+    actualizarContadorAlertas();
+
+
+    actualizarCuentaActiva();
+
+
+    document.getElementById(
+      "select-producto"
+    ).value =
+      productoActual;
+
+
+    document.getElementById(
+      "select-producto"
+    ).addEventListener(
+      "change",
+      function(e) {
+
+        productoActual =
+          e.target.value;
+
+        localStorage.setItem(
+          "productoSeleccionado",
+          productoActual
+        );
+
+        cargarDatosProducto(
+          productoActual
+        );
+
+      }
+    );
+
+  }
+);
+
+
+/* =====================================================
+   MENÚ HAMBURGUESA
+   ===================================================== */
+
+function toggleMenuHamburguesa() {
+
+  const sidebar =
+    document.getElementById("sidebar");
+
+  const menu =
+    document.getElementById(
+      "menu-desplegable"
+    );
+
+  sidebar.classList.toggle(
+    "expanded"
+  );
+
+  menu.classList.toggle(
+    "active"
+  );
+
+}
+
+
+/* =====================================================
+   MENÚ ADMIN
+   ===================================================== */
+
+function toggleAdminMenu() {
+
+  const dropdown =
+    document.getElementById(
+      "admin-dropdown"
+    );
+
+  dropdown.classList.toggle(
+    "active"
+  );
+
+}
+
+
+/* =====================================================
+   CARGAR PRODUCTO
+   ===================================================== */
+
+function cargarDatosProducto(id) {
+
+  const p =
+    productos[id];
+
+  if (!p) return;
+
+
+  document.getElementById(
+    "p-id"
+  ).textContent =
+    p.id;
+
+
+  document.getElementById(
+    "p-nombre"
+  ).value =
+    p.nombre;
+
+
+  document.getElementById(
+    "p-categoria"
+  ).value =
+    p.categoria;
+
+
+  document.getElementById(
+    "p-proveedor"
+  ).value =
+    p.proveedor;
+
+
+  document.getElementById(
+    "p-ubicacion"
+  ).value =
+    p.ubicacion;
+
+
+  document.getElementById(
+    "p-cantidad"
+  ).value =
+    p.cantidad;
+
+
+  document.getElementById(
+    "p-minimo"
+  ).value =
+    p.min;
+
+
+  document.getElementById(
+    "p-maximo"
+  ).value =
+    p.max;
+
+
+  document.getElementById(
+    "p-precio"
+  ).value =
+    Number(p.precio).toFixed(2);
+
+
+  document.getElementById(
+    "p-valortotal"
+  ).value =
+    `$ ${(p.cantidad * p.precio).toFixed(2)}`;
+
+
+  document.getElementById(
+    "p-vencimiento"
+  ).value =
+    p.vencimiento;
+
+
+  document.getElementById(
+    "p-actualizacion"
+  ).value =
+    p.actualizacion;
+
+
+  document.getElementById(
+    "p-notas"
+  ).value =
+    p.notas || "";
+
+
+  recalcularNiveles(p);
+
+}
+
+
+/* =====================================================
+   RECALCULAR STOCK
+   ===================================================== */
+
+function recalcularNiveles(p) {
+
+  let porcentaje = 0;
+
+  if (p.max > 0) {
+
+    porcentaje =
+      Math.min(
+        Math.round(
+          (p.cantidad / p.max) * 100
+        ),
+        100
+      );
+
+  }
+
+
+  document.getElementById(
+    "progress-text"
+  ).textContent =
+    `${porcentaje}%`;
+
+
+  document.getElementById(
+    "p-ocupacion"
+  ).textContent =
+    `${porcentaje}%`;
+
+
+  const fill =
+    document.getElementById(
+      "progress-fill"
+    );
+
+
+  fill.style.width =
+    `${porcentaje}%`;
+
+
+  const banner =
+    document.getElementById(
+      "stock-warning"
+    );
+
+
+  const estadoBadge =
+    document.getElementById(
+      "p-estado"
+    );
+
+
+  if (p.cantidad < p.min) {
+
+    banner.style.display =
+      "flex";
+
+
+    document.getElementById(
+      "banner-cant"
+    ).textContent =
+      `${p.cantidad} Kg/Unid`;
+
+
+    document.getElementById(
+      "banner-min"
+    ).textContent =
+      `${p.min} Kg/Unid`;
+
+
+    fill.style.backgroundColor =
+      "#ff4d4d";
+
+
+    estadoBadge.textContent =
+      "Stock bajo";
+
+
+    estadoBadge.className =
+      "badge-status-warn";
+
+
+    estadoBadge.style.backgroundColor =
+      "#fef08a";
+
+
+    estadoBadge.style.color =
+      "#854d0e";
+
+  } else {
+
+    banner.style.display =
+      "none";
+
+
+    fill.style.backgroundColor =
+      "#00bba7";
+
+
+    estadoBadge.textContent =
+      "Normal";
+
+
+    estadoBadge.className =
+      "badge-status-warn";
+
+
+    estadoBadge.style.backgroundColor =
+      "#dcfce7";
+
+
+    estadoBadge.style.color =
+      "#15803d";
+
+  }
+
+}
+
+
+/* =====================================================
+   EDITAR / GUARDAR CAMBIOS
+   ===================================================== */
+
+function toggleModoEdicion() {
+
+  const idsCampos = [
+
+    "p-nombre",
+    "p-categoria",
+    "p-proveedor",
+    "p-ubicacion",
+    "p-cantidad",
+    "p-minimo",
+    "p-maximo",
+    "p-precio",
+    "p-vencimiento",
+    "p-notas"
+
+  ];
+
+
+  const btn =
+    document.getElementById(
+      "btn-editar"
+    );
+
+
+  if (!modoEdicion) {
+
+    modoEdicion = true;
+
+
+    idsCampos.forEach(
+      function(id) {
+
+        const el =
+          document.getElementById(id);
+
+        el.readOnly = false;
+
+        el.classList.add(
+          "editable-field"
+        );
+
+      }
+    );
+
+
+    btn.innerHTML =
+      '<i class="fa-solid fa-floppy-disk"></i> Guardar Cambios';
+
+
+    btn.style.background =
+      "#0066ff";
+
+    btn.style.color =
+      "white";
+
+    return;
+
+  }
+
+
+  const p =
+    productos[productoActual];
+
+  if (!p) return;
+
+
+  const cantidad =
+    parseInt(
+      document.getElementById(
+        "p-cantidad"
+      ).value
+    );
+
+
+  const minimo =
+    parseInt(
+      document.getElementById(
+        "p-minimo"
+      ).value
+    );
+
+
+  const maximo =
+    parseInt(
+      document.getElementById(
+        "p-maximo"
+      ).value
+    );
+
+
+  const precio =
+    parseFloat(
+      document.getElementById(
+        "p-precio"
+      ).value
+    );
+
+
+  if (isNaN(cantidad) || cantidad < 0) {
+
+    alert(
+      "La cantidad actual no es válida."
+    );
+
+    return;
+
+  }
+
+
+  if (isNaN(minimo) || minimo < 0) {
+
+    alert(
+      "El stock mínimo no es válido."
+    );
+
+    return;
+
+  }
+
+
+  if (isNaN(maximo) || maximo <= 0) {
+
+    alert(
+      "El stock máximo no es válido."
+    );
+
+    return;
+
+  }
+
+
+  if (maximo < minimo) {
+
+    alert(
+      "El stock máximo no puede ser menor que el mínimo."
+    );
+
+    return;
+
+  }
+
+
+  if (isNaN(precio) || precio < 0) {
+
+    alert(
+      "El precio no es válido."
+    );
+
+    return;
+
+  }
+
+
+  p.nombre =
+    document.getElementById(
+      "p-nombre"
+    ).value.trim();
+
+
+  p.categoria =
+    document.getElementById(
+      "p-categoria"
+    ).value.trim();
+
+
+  p.proveedor =
+    document.getElementById(
+      "p-proveedor"
+    ).value.trim();
+
+
+  p.ubicacion =
+    document.getElementById(
+      "p-ubicacion"
+    ).value.trim();
+
+
+  p.cantidad =
+    cantidad;
+
+
+  p.min =
+    minimo;
+
+
+  p.max =
+    maximo;
+
+
+  p.precio =
+    precio;
+
+
+  p.vencimiento =
+    document.getElementById(
+      "p-vencimiento"
+    ).value;
+
+
+  p.notas =
+    document.getElementById(
+      "p-notas"
+    ).value;
+
+
+  p.actualizacion =
+    new Date()
+      .toISOString()
+      .split("T")[0];
+
+
+  guardarProductosLocalStorage();
+
+
+  modoEdicion = false;
+
+
+  idsCampos.forEach(
+    function(id) {
+
+      const el =
+        document.getElementById(id);
+
+      el.readOnly = true;
+
+      el.classList.remove(
+        "editable-field"
+      );
+
+    }
+  );
+
+
+  btn.innerHTML =
+    '<i class="fa-solid fa-pen-to-square"></i> Editar';
+
+
+  btn.style.background =
+    "white";
+
+
+  btn.style.color =
+    "#0066ff";
+
+
+  cargarDatosProducto(
+    productoActual
+  );
+
+
+  actualizarContadorAlertas();
+
+
+  alert(
+    "¡Datos actualizados correctamente y guardados!"
+  );
+
+}
+
+
+/* =====================================================
+   ALERTAS
+   ===================================================== */
+
+function abrirModalAlertas() {
+
+  const overlay =
+    document.getElementById(
+      "modal-overlay"
+    );
+
+  const titulo =
+    document.getElementById(
+      "modal-titulo"
+    );
+
+  const body =
+    document.getElementById(
+      "modal-body"
+    );
+
+
+  titulo.textContent =
+    "Alertas del Sistema";
+
+
+  if (alertas.length === 0) {
+
+    body.innerHTML =
+      "<p style='color:#64748b;'>No hay alertas pendientes.</p>";
+
+  } else {
+
+    let html =
+      "<ul style='list-style:none;'>";
+
+
+    alertas.forEach(
+      function(a) {
+
+        html += `
+
+          <li style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:10px 0;
+            border-bottom:1px solid #e2e8f0;
+          ">
+
+            <span style="
+              font-size:0.88rem;
+              color:#b91c1c;
+              font-weight:600;
+            ">
+
+              <i class="fa-solid fa-bell"></i>
+
+              ${a.mensaje}
+
+            </span>
+
+            <button
+              onclick="eliminarAlerta(${a.id})"
+              style="
+                background:#ff4d4d;
+                color:white;
+                border:none;
+                border-radius:6px;
+                padding:4px 8px;
+                cursor:pointer;
+              ">
+
+              <i class="fa-solid fa-trash"></i>
+
+            </button>
+
+          </li>
+
+        `;
+
+      }
+    );
+
+
+    html += "</ul>";
+
+    body.innerHTML =
+      html;
+
+  }
+
+
+  overlay.style.display =
+    "flex";
+
+}
+
+
+/* =====================================================
+   ELIMINAR ALERTA
+   ===================================================== */
+
+function eliminarAlerta(id) {
+
+  alertas =
+    alertas.filter(
+      function(a) {
+
+        return a.id !== id;
+
+      }
+    );
+
+
+  guardarAlertas();
+
+  actualizarContadorAlertas();
+
+  abrirModalAlertas();
+
+}
+
+
+/* =====================================================
+   CONTADOR ALERTAS
+   ===================================================== */
+
+function actualizarContadorAlertas() {
+
+  document.getElementById(
+    "alert-count"
+  ).textContent =
+    alertas.length;
+
+}
+
+
+/* =====================================================
+   MI CUENTA
+   ===================================================== */
+
+function abrirModalMiCuenta() {
+
+  toggleAdminMenu();
+
+
+  const cuenta =
+    obtenerCuentaActiva();
+
+
+  if (!cuenta) return;
+
+
+  const overlay =
+    document.getElementById(
+      "modal-overlay"
+    );
+
+  const titulo =
+    document.getElementById(
+      "modal-titulo"
+    );
+
+  const body =
+    document.getElementById(
+      "modal-body"
+    );
+
+
+  titulo.textContent =
+    "Mi Cuenta";
+
+
+  body.innerHTML = `
+
+    <form onsubmit="guardarMiCuenta(event)">
+
+      <div style="margin-bottom:12px;">
+
+        <label>
+          Nombre:
+        </label>
+
+        <input
+          type="text"
+          id="editar-nombre-cuenta"
+          value="${cuenta.nombre}"
+          required
+          style="
+            border:1px solid #cbd5e1;
+            background:white;
+          "
+        >
+
+      </div>
+
+
+      <div style="margin-bottom:12px;">
+
+        <label>
+          Correo electrónico:
+        </label>
+
+        <input
+          type="email"
+          id="editar-correo-cuenta"
+          value="${cuenta.correo}"
+          required
+          style="
+            border:1px solid #cbd5e1;
+            background:white;
+          "
+        >
+
+      </div>
+
+
+      <div style="margin-bottom:16px;">
+
+        <label>
+          Rol:
+        </label>
+
+        <select
+          id="editar-rol-cuenta"
+          style="
+            width:100%;
+            padding:10px;
+            border-radius:8px;
+            border:1px solid #cbd5e1;
+            background:white;
+          "
+        >
+
+          <option
+            value="Administrador"
+            ${cuenta.rol === "Administrador" ? "selected" : ""}>
+            Administrador
+          </option>
+
+          <option
+            value="Encargado de inventario"
+            ${cuenta.rol === "Encargado de inventario" ? "selected" : ""}>
+            Encargado de inventario
+          </option>
+
+          <option
+            value="Consulta"
+            ${cuenta.rol === "Consulta" ? "selected" : ""}>
+            Consulta
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          gap:8px;
+        "
+      >
+
+        <button
+          type="button"
+          onclick="eliminarCuentaActiva()"
+          style="
+            padding:8px 14px;
+            border:none;
+            border-radius:8px;
+            background:#ff4d4d;
+            color:white;
+            font-weight:bold;
+            cursor:pointer;
+          "
+        >
+
+          <i class="fa-solid fa-trash"></i>
+          Eliminar
+
+        </button>
+
+
+        <button
+          type="submit"
+          class="btn-action btn-blue-fill"
+          style="padding:8px 16px;"
+        >
+
+          <i class="fa-solid fa-save"></i>
+          Guardar
+
+        </button>
+
+      </div>
+
+    </form>
+
+  `;
+
+
+  overlay.style.display =
+    "flex";
+
+}
+
+
+/* =====================================================
+   GUARDAR MI CUENTA
+   ===================================================== */
+
+function guardarMiCuenta(e) {
+
+  e.preventDefault();
+
+
+  const cuenta =
+    obtenerCuentaActiva();
+
+
+  if (!cuenta) return;
+
+
+  const nombre =
+    document.getElementById(
+      "editar-nombre-cuenta"
+    ).value.trim();
+
+
+  const correo =
+    document.getElementById(
+      "editar-correo-cuenta"
+    ).value.trim();
+
+
+  const rol =
+    document.getElementById(
+      "editar-rol-cuenta"
+    ).value;
+
+
+  if (!nombre) {
+
+    alert(
+      "⚠️ Escribe el nombre."
+    );
+
+    return;
+
+  }
+
+
+  if (!correo) {
+
+    alert(
+      "⚠️ Escribe el correo."
+    );
+
+    return;
+
+  }
+
+
+  const correoExiste =
+    cuentas.some(
+      c =>
+        c.id !== cuenta.id &&
+        c.correo.toLowerCase() ===
+        correo.toLowerCase()
+    );
+
+
+  if (correoExiste) {
+
+    alert(
+      "⚠️ Ese correo ya pertenece a otra cuenta."
+    );
+
+    return;
+
+  }
+
+
+  cuenta.nombre =
+    nombre;
+
+
+  cuenta.correo =
+    correo;
+
+
+  cuenta.rol =
+    rol;
+
+
+  guardarCuentas();
+
+  actualizarCuentaActiva();
+
+  cerrarModal();
+
+
+  alert(
+    "✅ Datos de la cuenta actualizados correctamente."
+  );
+
+}
+
+
+/* =====================================================
+   AGREGAR CUENTA
+   ===================================================== */
+
+function abrirModalAgregarCuenta() {
+
+  toggleAdminMenu();
+
+
+  const overlay =
+    document.getElementById(
+      "modal-overlay"
+    );
+
+  const titulo =
+    document.getElementById(
+      "modal-titulo"
+    );
+
+  const body =
+    document.getElementById(
+      "modal-body"
+    );
+
+
+  titulo.textContent =
+    "Agregar Nueva Cuenta";
+
+
+  body.innerHTML = `
+
+    <form onsubmit="crearCuenta(event)">
+
+      <div style="margin-bottom:12px;">
+
+        <label>
+          Nombre del Usuario:
+        </label>
+
+        <input
+          type="text"
+          id="nuevo-usuario"
+          required
+          style="
+            border:1px solid #cbd5e1;
+            background:white;
+          "
+        >
+
+      </div>
+
+
+      <div style="margin-bottom:12px;">
+
+        <label>
+          Correo Electrónico:
+        </label>
+
+        <input
+          type="email"
+          id="nuevo-correo"
+          required
+          placeholder="ejemplo@correo.com"
+          style="
+            border:1px solid #cbd5e1;
+            background:white;
+          "
+        >
+
+      </div>
+
+
+      <div style="margin-bottom:16px;">
+
+        <label>
+          Rol:
+        </label>
+
+        <select
+          id="nuevo-rol"
+          style="
+            width:100%;
+            padding:10px;
+            border-radius:8px;
+            border:1px solid #cbd5e1;
+          "
+        >
+
+          <option value="Administrador">
+            Administrador
+          </option>
+
+          <option value="Encargado de inventario">
+            Encargado de inventario
+          </option>
+
+          <option value="Consulta">
+            Consulta
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div style="text-align:right;">
+
+        <button
+          type="submit"
+          class="btn-action btn-blue-fill"
+          style="padding:8px 16px;"
+        >
+
+          <i class="fa-solid fa-user-plus"></i>
+          Crear Cuenta
+
+        </button>
+
+      </div>
+
+    </form>
+
+  `;
+
+
+  overlay.style.display =
+    "flex";
+
+}
+
+
+/* =====================================================
+   CREAR CUENTA
+   ===================================================== */
+
+function crearCuenta(e) {
+
+  e.preventDefault();
+
+
+  const nombre =
+    document.getElementById(
+      "nuevo-usuario"
+    ).value.trim();
+
+
+  const correo =
+    document.getElementById(
+      "nuevo-correo"
+    ).value.trim();
+
+
+  const rol =
+    document.getElementById(
+      "nuevo-rol"
+    ).value;
+
+
+  if (!nombre) {
+
+    alert(
+      "⚠️ Escribe el nombre del usuario."
+    );
+
+    return;
+
+  }
+
+
+  if (!correo) {
+
+    alert(
+      "⚠️ Escribe el correo electrónico."
+    );
+
+    return;
+
+  }
+
+
+  const correoExiste =
+    cuentas.some(
+      cuenta =>
+        cuenta.correo.toLowerCase() ===
+        correo.toLowerCase()
+    );
+
+
+  if (correoExiste) {
+
+    alert(
+      "⚠️ Ese correo ya está registrado."
+    );
+
+    return;
+
+  }
+
+
+  const nuevaCuenta = {
+
+    id: Date.now().toString(),
+
+    nombre: nombre,
+
+    correo: correo,
+
+    rol: rol,
+
+    foto: ""
+
+  };
+
+
+  cuentas.push(
+    nuevaCuenta
+  );
+
+
+  cuentaActivaId =
+    nuevaCuenta.id;
+
+
+  guardarCuentas();
+
+  actualizarCuentaActiva();
+
+  cerrarModal();
+
+
+  alert(
+    `✅ Cuenta "${nombre}" creada correctamente.`
+  );
+
+}
+
+
+/* =====================================================
+   CAMBIAR CUENTA
+   ===================================================== */
+
+function abrirModalCambiarCuenta() {
+
+  toggleAdminMenu();
+
+
+  const overlay =
+    document.getElementById(
+      "modal-overlay"
+    );
+
+  const titulo =
+    document.getElementById(
+      "modal-titulo"
+    );
+
+  const body =
+    document.getElementById(
+      "modal-body"
+    );
+
+
+  titulo.textContent =
+    "Cambiar de Cuenta";
+
+
+  let html = `
+
+    <div style="margin-bottom:16px;">
+
+      <label>
+        Selecciona la cuenta:
+      </label>
+
+      <div
+        style="
+          display:flex;
+          flex-direction:column;
+          gap:8px;
+        "
+    >
+
+  `;
+
+
+  cuentas.forEach(
+    function(cuenta) {
+
+      html += `
+
+        <button
+          type="button"
+          onclick="cambiarCuenta('${cuenta.id}')"
+          style="
+            width:100%;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:12px;
+            border:1px solid #e2e8f0;
+            border-radius:8px;
+            background:white;
+            cursor:pointer;
+            text-align:left;
+          "
+        >
+
+          <div>
+
+            <strong>
+              ${cuenta.nombre}
+            </strong>
+
+            <br>
+
+            <small style="color:#64748b;">
+              ${cuenta.correo}
+            </small>
+
+            <br>
+
+            <small style="color:#94a3b8;">
+              ${cuenta.rol}
+            </small>
+
+          </div>
+
+          ${
+            cuenta.id === cuentaActivaId
+              ? `
+                <span
+                  style="
+                    color:#16a34a;
+                    font-weight:bold;
+                    font-size:20px;
+                  "
+                >
+                  ✓
+                </span>
+              `
+              : ""
+          }
+
+        </button>
+
+      `;
+
+    }
+  );
+
+
+  html += `
+
+      </div>
+
+    </div>
+
+  `;
+
+
+  body.innerHTML =
+    html;
+
+
+  overlay.style.display =
+    "flex";
+
+}
+
+
+/* =====================================================
+   CAMBIAR CUENTA
+   ===================================================== */
+
+function cambiarCuenta(id) {
+
+  const cuenta =
+    cuentas.find(
+      c => c.id === id
+    );
+
+
+  if (!cuenta) return;
+
+
+  cuentaActivaId =
+    id;
+
+
+  guardarCuentas();
+
+  actualizarCuentaActiva();
+
+  cerrarModal();
+
+
+  alert(
+    `✅ Sesión cambiada a: ${cuenta.nombre}`
+  );
+
+}
+
+
+/* =====================================================
+   ELIMINAR CUENTA ACTIVA
+   ===================================================== */
+
+function eliminarCuentaActiva() {
+
+  if (cuentas.length <= 1) {
+
+    alert(
+      "⚠️ Debes tener al menos una cuenta."
+    );
+
+    return;
+
+  }
+
+
+  const cuenta =
+    obtenerCuentaActiva();
+
+
+  if (!cuenta) return;
+
+
+  const confirmar =
+    confirm(
+      `¿Seguro que deseas eliminar la cuenta "${cuenta.nombre}"?`
+    );
+
+
+  if (!confirmar) return;
+
+
+  cuentas =
+    cuentas.filter(
+      c =>
+        c.id !== cuentaActivaId
+    );
+
+
+  cuentaActivaId =
+    cuentas[0].id;
+
+
+  guardarCuentas();
+
+  actualizarCuentaActiva();
+
+  cerrarModal();
+
+
+  alert(
+    "🗑️ Cuenta eliminada correctamente."
+  );
+
+}
+
+
+/* =====================================================
+   ELIMINAR PRODUCTO
+   ===================================================== */
+
+function eliminarProducto() {
+
+  const p =
+    productos[productoActual];
+
+  if (!p) return;
+
+
+  if (
+    confirm(
+      `¿Estás seguro de eliminar el producto ${p.nombre}?`
+    )
+  ) {
+
+    delete productos[
+      productoActual
+    ];
+
+
+    guardarProductosLocalStorage();
+
+
+    const siguienteKey =
+      Object.keys(productos)[0];
+
+
+    if (siguienteKey) {
+
+      productoActual =
+        siguienteKey;
+
+
+      localStorage.setItem(
+        "productoSeleccionado",
+        productoActual
+      );
+
+
+      document.getElementById(
+        "select-producto"
+      ).value =
+        productoActual;
+
+
+      cargarDatosProducto(
+        productoActual
+      );
+
+    } else {
+
+      alert(
+        "No quedan productos en el inventario."
+      );
+
+    }
+
+  }
+
+}
+
+
+/* =====================================================
+   ENTRADA / SALIDA
+   ===================================================== */
+
+function abrirModalTransaccion(tipo) {
+
+  const overlay =
+    document.getElementById(
+      "modal-overlay"
+    );
+
+  const titulo =
+    document.getElementById(
+      "modal-titulo"
+    );
+
+  const body =
+    document.getElementById(
+      "modal-body"
+    );
+
+
+  titulo.textContent =
+    `Registrar ${tipo} de Inventario`;
+
+
+  body.innerHTML = `
+
+    <form
+      onsubmit="procesarTransaccion(event, '${tipo}')">
+
+      <div style="margin-bottom:12px;">
+
+        <label>
+          Cantidad:
+        </label>
+
+        <input
+          type="number"
+          id="input-cant"
+          min="1"
+          required
+          style="
+            border:1px solid #cbd5e1;
+            background:white;
+          "
+        >
+
+      </div>
+
+
+      <div style="margin-bottom:16px;">
+
+        <label>
+          Nota u Observación:
+        </label>
+
+        <input
+          type="text"
+          id="input-obs"
+          placeholder="Ej. Ajuste de inventario"
+          style="
+            border:1px solid #cbd5e1;
+            background:white;
+          "
+        >
+
+      </div>
+
+
+      <div
+        style="
+          text-align:right;
+          display:flex;
+          gap:8px;
+          justify-content:flex-end;
+        "
+      >
+
+        <button
+          type="button"
+          class="btn"
+          onclick="cerrarModal()">
+
+          Cancelar
+
+        </button>
+
+
+        <button
+          type="submit"
+          class="btn-action btn-blue-fill"
+          style="padding:8px 16px;">
+
+          Guardar ${tipo}
+
+        </button>
+
+      </div>
+
+    </form>
+
+  `;
+
+
+  overlay.style.display =
+    "flex";
+
+}
+
+
+/* =====================================================
+   PROCESAR ENTRADA / SALIDA
+   ===================================================== */
+
+function procesarTransaccion(e, tipo) {
+
+  e.preventDefault();
+
+
+  const cant =
+    parseInt(
+      document.getElementById(
+        "input-cant"
+      ).value
+    );
+
+
+  const obs =
+    document.getElementById(
+      "input-obs"
+    ).value;
+
+
+  const p =
+    productos[productoActual];
+
+
+  if (!p) return;
+
+
+  if (isNaN(cant) || cant <= 0) {
+
+    alert(
+      "La cantidad no es válida."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    tipo === "Salida" &&
+    cant > p.cantidad
+  ) {
+
+    alert(
+      "No hay suficiente stock."
+    );
+
+    return;
+
+  }
+
+
+  if (tipo === "Entrada") {
+
+    p.cantidad += cant;
+
+  } else {
+
+    p.cantidad -= cant;
+
+  }
+
+
+  const hoy =
+    new Date()
+      .toISOString()
+      .split("T")[0];
+
+
+  p.actualizacion =
+    hoy;
+
+
+  if (!Array.isArray(p.historial)) {
+
+    p.historial = [];
+
+  }
+
+
+  p.historial.push({
+
+    fecha: hoy,
+    tipo: tipo,
+    cantidad: cant,
+    observacion: obs
+
+  });
+
+
+  guardarProductosLocalStorage();
+
+
+  cargarDatosProducto(
+    productoActual
+  );
+
+
+  actualizarContadorAlertas();
+
+
+  cerrarModal();
+
+
+  alert(
+    `${tipo} registrada correctamente y guardada.`
+  );
+
+}
+
+
+/* =====================================================
+   GUARDAR NOTAS
+   ===================================================== */
+
+function guardarNotas() {
+
+  const p =
+    productos[productoActual];
+
+
+  if (!p) return;
+
+
+  p.notas =
+    document.getElementById(
+      "p-notas"
+    ).value;
+
+
+  p.actualizacion =
+    new Date()
+      .toISOString()
+      .split("T")[0];
+
+
+  guardarProductosLocalStorage();
+
+
+  cargarDatosProducto(
+    productoActual
+  );
+
+
+  alert(
+    "Notas guardadas correctamente."
+  );
+
+}
+
+
+/* =====================================================
+   REPORTE
+   ===================================================== */
+
+function generarReporte() {
+
+  const p =
+    productos[productoActual];
+
+
+  if (!p) return;
+
+
+  alert(
+    `Reporte PDF generado exitosamente para ${p.nombre}.`
+  );
+
+}
+
+
+/* =====================================================
+   HISTORIAL
+   ===================================================== */
+
+function verHistorial() {
+
+  const overlay =
+    document.getElementById(
+      "modal-overlay"
+    );
+
+  const titulo =
+    document.getElementById(
+      "modal-titulo"
+    );
+
+  const body =
+    document.getElementById(
+      "modal-body"
+    );
+
+  const p =
+    productos[productoActual];
+
+
+  if (!p) return;
+
+
+  if (!Array.isArray(p.historial)) {
+
+    p.historial = [];
+
+  }
+
+
+  titulo.textContent =
+    `Historial de ${p.nombre}`;
+
+
+  if (
+    p.historial.length === 0
+  ) {
+
+    body.innerHTML =
+      "<p style='color:#64748b;'>Sin registros en el historial.</p>";
+
+  } else {
+
+    let listHtml =
+      "<ul style='list-style:none;'>";
+
+
+    p.historial
+      .slice()
+      .reverse()
+      .forEach(
+        function(h) {
+
+          listHtml += `
+
+            <li
+              style="
+                padding:8px 0;
+                border-bottom:1px solid #e2e8f0;
+                font-size:0.9rem;
+              "
+            >
+
+              <b>${h.fecha}</b>
+
+              -
+
+              <span
+                style="
+                  color:${
+                    h.tipo === "Entrada"
+                      ? "#00bba7"
+                      : "#ff4d4d"
+                  };
+                  font-weight:bold;
+                "
+              >
+
+                ${h.tipo}
+
+              </span>
+
+              de
+
+              <b>
+                ${h.cantidad} unds.
+              </b>
+
+              (
+              ${h.observacion || "Sin nota"}
+              )
+
+            </li>
+
+          `;
+
+        }
+      );
+
+
+    listHtml +=
+      "</ul>";
+
+
+    body.innerHTML =
+      listHtml;
+
+  }
+
+
+  overlay.style.display =
+    "flex";
+
+}
+
+
+/* =====================================================
+   CONFIGURACIÓN
+   ===================================================== */
+
+function mostrarSeccion(nombre) {
+
+  alert(
+    `Navegando a la sección: ${nombre}`
+  );
+
+}
+
+
+/* =====================================================
+   CERRAR SESIÓN
+   ===================================================== */
+
+function cerrarSesion() {
+
+  alert(
+    "Sesión cerrada."
+  );
+
+}
+
+
+/* =====================================================
+   CERRAR MODAL
+   ===================================================== */
+
+function cerrarModal() {
+
+  document.getElementById(
+    "modal-overlay"
+  ).style.display =
+    "none";
+
+}
+
+
+/* =====================================================
+   DESCARTAR BANNER
+   ===================================================== */
+
+function descartarBanner() {
+
+  document.getElementById(
+    "stock-warning"
+  ).style.display =
+    "none";
+
+}
+
+</script>
+
+</body>
+
+</html>

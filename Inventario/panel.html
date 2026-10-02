@@ -1,0 +1,3290 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Panel de Control - Inventario Escolar</title>
+
+    <link href="./src/output.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="min-h-screen flex">
+
+        <!-- =====================================================
+             BARRA LATERAL
+        ====================================================== -->
+
+        <aside class="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col">
+
+            <!-- LOGO DEL INSTITUTO -->
+
+            <div class="p-5 border-b border-gray-200">
+
+                <div class="flex items-center gap-3">
+
+                    <div class="w-14 h-14 rounded-xl overflow-hidden
+                                border border-gray-200 bg-white
+                                flex items-center justify-center">
+
+                        <img
+                            src="./img/logo-instituto.jpg"
+                            alt="Logo del Instituto"
+                            class="w-full h-full object-contain">
+
+                    </div>
+
+                    <div>
+
+                        <h1 class="font-bold text-gray-800">
+                            Inventario
+                        </h1>
+
+                        <p class="text-xs text-gray-500">
+                            Escolar
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- MENÚ -->
+
+            <nav class="p-3 flex-1">
+
+                <!-- PANEL -->
+
+                <a
+                    href="panel.html"
+                    class="flex items-center gap-3 px-4 py-3
+                           rounded-lg bg-purple-100
+                           text-purple-700 font-semibold mb-1">
+
+                    🏠
+
+                    <span>
+                        Panel de Control
+                    </span>
+
+                </a>
+
+
+                <!-- CATÁLOGO -->
+
+                <a
+                    href="catalogo.html"
+                    class="flex items-center gap-3 px-4 py-3
+                           rounded-lg text-gray-600
+                           hover:bg-gray-100 transition">
+
+                    📦
+
+                    <span>
+                        Catálogo
+                    </span>
+
+                </a>
+
+
+                <!-- ALERTAS -->
+
+                <a
+                    href="alertas.html"
+                    class="flex items-center gap-3 px-4 py-3
+                           rounded-lg text-gray-600
+                           hover:bg-gray-100 transition">
+
+                    ⚠️
+
+                    <span>
+                        Alertas
+                    </span>
+
+                </a>
+
+
+                <!-- ENTRADAS -->
+
+                <a
+                    href="indext.html"
+                    class="flex items-center gap-3 px-4 py-3
+                           rounded-lg text-gray-600
+                           hover:bg-gray-100 transition">
+
+                    ⬆️
+
+                    <span>
+                        Entradas
+                    </span>
+
+                </a>
+
+
+                <!-- SALIDAS -->
+
+                <a
+                    href="Index1.html"
+                    class="flex items-center gap-3 px-4 py-3
+                           rounded-lg text-gray-600
+                           hover:bg-gray-100 transition">
+
+                    ⬇️
+
+                    <span>
+                        Salidas
+                    </span>
+
+                </a>
+
+
+                <!-- CONFIGURACIÓN -->
+
+                <button
+                    onclick="abrirConfiguracion()"
+                    class="w-full flex items-center gap-3
+                           px-4 py-3 rounded-lg
+                           text-gray-600 hover:bg-gray-100
+                           transition text-left">
+
+                    ⚙️
+
+                    <span>
+                        Configuración
+                    </span>
+
+                </button>
+
+            </nav>
+
+
+            <!-- CERRAR SESIÓN -->
+
+            <div class="p-4 border-t border-gray-200">
+
+                <button
+                    onclick="cerrarSesion()"
+                    class="w-full flex items-center gap-3
+                           px-4 py-3 rounded-lg text-gray-600
+                           hover:bg-red-50 hover:text-red-600
+                           transition">
+
+                    🚪
+
+                    <span>
+                        Cerrar sesión
+                    </span>
+
+                </button>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =====================================================
+             CONTENIDO PRINCIPAL
+        ====================================================== -->
+
+        <main class="flex-1 min-w-0">
+
+
+            <!-- ENCABEZADO -->
+
+            <header class="bg-white border-b border-gray-200 px-8 py-5">
+
+                <div class="flex justify-between items-center">
+
+                    <div>
+
+                        <h2 class="text-2xl font-bold">
+                            Panel de Control
+                        </h2>
+
+                        <p class="text-sm text-gray-500">
+                            Resumen de inventario de alimentos escolares
+                        </p>
+
+                    </div>
+
+
+                    <!-- PARTE DERECHA DEL ENCABEZADO -->
+
+                    <div class="flex items-center gap-5">
+
+
+                        <!-- NOTIFICACIONES -->
+
+                        <button
+                            onclick="mostrarNotificaciones()"
+                            class="relative text-xl
+                                   hover:text-purple-600 transition">
+
+                            🔔
+
+                            <span
+                                id="contadorAlertas"
+                                class="absolute -top-2 -right-2
+                                       bg-red-500 text-white
+                                       text-xs w-5 h-5
+                                       rounded-full
+                                       flex items-center justify-center">
+
+                                0
+
+                            </span>
+
+                        </button>
+
+
+                        <!-- PERFIL -->
+
+                        <div class="relative">
+
+                            <button
+                                onclick="toggleMenuCuenta()"
+                                class="flex items-center gap-2
+                                       hover:bg-gray-100
+                                       rounded-xl px-2 py-1
+                                       transition">
+
+                                <div
+                                    class="w-10 h-10 rounded-full
+                                           overflow-hidden
+                                           bg-gray-200
+                                           flex items-center
+                                           justify-center">
+
+                                    <img
+                                        id="fotoAdministrador"
+                                        src=""
+                                        alt="Foto de perfil"
+                                        class="w-full h-full object-cover hidden">
+
+                                    <span
+                                        id="iconoAdministrador"
+                                        class="text-xl">
+
+                                        👤
+
+                                    </span>
+
+                                </div>
+
+
+                                <div class="text-left">
+
+                                    <p
+                                        id="nombreAdministrador"
+                                        class="font-semibold text-sm">
+
+                                        Admin
+
+                                    </p>
+
+                                    <p
+                                        id="rolAdministrador"
+                                        class="text-xs text-gray-500">
+
+                                        Administrador
+
+                                    </p>
+
+                                </div>
+
+
+                                <span class="text-gray-400">
+                                    ▾
+                                </span>
+
+                            </button>
+
+
+                            <!-- MENÚ DE CUENTA -->
+
+                            <div
+                                id="menuCuenta"
+                                class="hidden absolute right-0
+                                       mt-2 w-64 bg-white
+                                       border border-gray-200
+                                       rounded-xl shadow-xl
+                                       z-40 overflow-hidden">
+
+                                <div
+                                    class="p-4 border-b
+                                           border-gray-200">
+
+                                    <p
+                                        id="menuNombre"
+                                        class="font-bold">
+
+                                        Admin
+
+                                    </p>
+
+                                    <p
+                                        id="menuCorreo"
+                                        class="text-xs text-gray-500">
+
+                                        admin@instituto.com
+
+                                    </p>
+
+                                </div>
+
+
+                                <button
+                                    onclick="abrirMiCuenta()"
+                                    class="w-full text-left
+                                           px-4 py-3
+                                           hover:bg-gray-50">
+
+                                    👤 Mi cuenta
+
+                                </button>
+
+
+                                <button
+                                    onclick="abrirAgregarCuenta()"
+                                    class="w-full text-left
+                                           px-4 py-3
+                                           hover:bg-gray-50">
+
+                                    ➕ Agregar cuenta
+
+                                </button>
+
+
+                                <button
+                                    onclick="abrirCambiarCuenta()"
+                                    class="w-full text-left
+                                           px-4 py-3
+                                           hover:bg-gray-50">
+
+                                    🔄 Cambiar cuenta
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- =====================================================
+                 CONTENIDO
+            ====================================================== -->
+
+            <section class="p-8">
+
+
+                <!-- BOTÓN EDITAR -->
+
+                <div class="flex justify-end mb-5">
+
+                    <button
+                        onclick="abrirEditorPanel()"
+                        class="bg-purple-600
+                               hover:bg-purple-700
+                               text-white px-5 py-2.5
+                               rounded-lg font-semibold
+                               transition">
+
+                        ✏️ Editar panel
+
+                    </button>
+
+                </div>
+
+
+                <!-- =================================================
+                     TARJETAS
+                ================================================== -->
+
+                <div
+                    class="grid grid-cols-1 sm:grid-cols-2
+                           lg:grid-cols-4 gap-5">
+
+
+                    <!-- TOTAL PRODUCTOS -->
+
+                    <div
+                        class="bg-white border border-gray-200
+                               rounded-xl p-5 shadow-sm">
+
+                        <div class="flex justify-between">
+
+                            <div
+                                class="w-11 h-11 rounded-lg
+                                       bg-purple-100
+                                       flex items-center
+                                       justify-center text-xl">
+
+                                📦
+
+                            </div>
+
+                            <span
+                                class="text-green-500 text-xl">
+
+                                ↗
+
+                            </span>
+
+                        </div>
+
+                        <p
+                            class="text-sm text-gray-500 mt-4">
+
+                            Total Productos
+
+                        </p>
+
+                        <h3
+                            id="totalProductos"
+                            class="text-3xl font-bold">
+
+                            6
+
+                        </h3>
+
+                        <p
+                            class="text-xs text-green-500 mt-1">
+
+                            +12% vs mes anterior
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- STOCK BAJO -->
+
+                    <div
+                        class="bg-white border border-gray-200
+                               rounded-xl p-5 shadow-sm">
+
+                        <div class="flex justify-between">
+
+                            <div
+                                class="w-11 h-11 rounded-lg
+                                       bg-red-50
+                                       flex items-center
+                                       justify-center text-xl">
+
+                                ⚠️
+
+                            </div>
+
+                            <span
+                                class="text-red-500 text-xl">
+
+                                ↘
+
+                            </span>
+
+                        </div>
+
+                        <p
+                            class="text-sm text-gray-500 mt-4">
+
+                            Stock Bajo
+
+                        </p>
+
+                        <h3
+                            id="stockBajo"
+                            class="text-3xl font-bold">
+
+                            2
+
+                        </h3>
+
+                        <p
+                            class="text-xs text-red-500 mt-1">
+
+                            Requiere reposición
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- PRÓXIMOS A VENCER -->
+
+                    <div
+                        class="bg-white border border-gray-200
+                               rounded-xl p-5 shadow-sm">
+
+                        <div class="flex justify-between">
+
+                            <div
+                                class="w-11 h-11 rounded-lg
+                                       bg-yellow-50
+                                       flex items-center
+                                       justify-center text-xl">
+
+                                📅
+
+                            </div>
+
+                            <span
+                                class="text-orange-500 text-xl">
+
+                                ⚠
+
+                            </span>
+
+                        </div>
+
+                        <p
+                            class="text-sm text-gray-500 mt-4">
+
+                            Próximos a vencer
+
+                        </p>
+
+                        <h3
+                            id="proximosVencer"
+                            class="text-3xl font-bold">
+
+                            0
+
+                        </h3>
+
+                        <p
+                            class="text-xs text-red-500 mt-1">
+
+                            En los próximos 7 días
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- VALOR TOTAL -->
+
+                    <div
+                        class="bg-white border border-gray-200
+                               rounded-xl p-5 shadow-sm">
+
+                        <div class="flex justify-between">
+
+                            <div
+                                class="w-11 h-11 rounded-lg
+                                       bg-green-50
+                                       flex items-center
+                                       justify-center text-xl">
+
+                                🛒
+
+                            </div>
+
+                            <span
+                                class="text-green-500 text-xl">
+
+                                ↗
+
+                            </span>
+
+                        </div>
+
+                        <p
+                            class="text-sm text-gray-500 mt-4">
+
+                            Valor Total
+
+                        </p>
+
+                        <h3
+                            id="valorTotal"
+                            class="text-3xl font-bold">
+
+                            $338.15
+
+                        </h3>
+
+                        <p
+                            class="text-xs text-green-500 mt-1">
+
+                            +8% vs mes anterior
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     SEGUNDA FILA
+                ================================================== -->
+
+                <div
+                    class="grid grid-cols-1 lg:grid-cols-2
+                           gap-6 mt-6">
+
+
+                    <!-- CATEGORÍAS -->
+
+                    <div
+                        class="bg-white border border-gray-200
+                               rounded-xl p-5">
+
+                        <div
+                            class="flex justify-between
+                                   items-center mb-5">
+
+                            <h3 class="font-bold text-lg">
+
+                                📊 Productos por Categoría
+
+                            </h3>
+
+                            <button
+                                onclick="editarCategorias()"
+                                class="text-purple-600
+                                       text-sm font-semibold
+                                       hover:underline">
+
+                                ✏️ Editar
+
+                            </button>
+
+                        </div>
+
+
+                        <div id="categorias">
+                        </div>
+
+                    </div>
+
+
+                    <!-- ALERTAS -->
+
+                    <div
+                        class="bg-white border border-gray-200
+                               rounded-xl p-5">
+
+                        <div
+                            class="flex justify-between
+                                   items-center mb-4">
+
+                            <h3 class="font-bold text-lg">
+
+                                ⚠️ Alertas de Inventario
+
+                            </h3>
+
+                            <button
+                                onclick="editarAlertas()"
+                                class="text-purple-600
+                                       text-sm font-semibold
+                                       hover:underline">
+
+                                ✏️ Editar
+
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            id="listaAlertas"
+                            class="space-y-2">
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ACTIVIDAD -->
+
+                    <div
+                        class="bg-white border border-gray-200
+                               rounded-xl p-5">
+
+                        <div
+                            class="flex justify-between
+                                   items-center mb-4">
+
+                            <h3 class="font-bold text-lg">
+
+                                Actividad Reciente
+
+                            </h3>
+
+                            <button
+                                onclick="agregarActividad()"
+                                class="text-purple-600
+                                       text-sm font-semibold
+                                       hover:underline">
+
+                                + Agregar
+
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            id="listaActividad"
+                            class="space-y-3">
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- GRÁFICA -->
+
+                    <div
+                        class="bg-white border border-gray-200
+                               rounded-xl p-5">
+
+                        <div
+                            class="flex justify-between
+                                   items-center mb-5">
+
+                            <h3 class="font-bold text-lg">
+
+                                📈 Productos en Inventario
+
+                            </h3>
+
+                            <button
+                                onclick="editarGrafica()"
+                                class="text-purple-600
+                                       text-sm font-semibold
+                                       hover:underline">
+
+                                ✏️ Editar
+
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            id="grafica"
+                            class="h-56 flex items-end
+                                   justify-around gap-4
+                                   border-b
+                                   border-gray-200">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- =========================================================
+         MODAL EDITAR PANEL
+    ========================================================== -->
+
+    <div
+        id="modalEditor"
+        class="hidden fixed inset-0
+               bg-black/40 flex items-center
+               justify-center z-50 p-5">
+
+        <div
+            class="bg-white rounded-2xl p-6
+                   w-full max-w-lg">
+
+            <div class="flex justify-between">
+
+                <h2 class="text-xl font-bold">
+                    ✏️ Editar Panel
+                </h2>
+
+                <button
+                    onclick="cerrarModal('modalEditor')"
+                    class="text-xl">
+
+                    ✕
+
+                </button>
+
+            </div>
+
+
+            <div class="space-y-4 mt-5">
+
+                <div>
+
+                    <label class="text-sm font-semibold">
+                        Total de productos
+                    </label>
+
+                    <input
+                        id="editarProductos"
+                        type="number"
+                        min="0"
+                        class="w-full border
+                               rounded-lg px-3 py-2 mt-1">
+
+                </div>
+
+
+                <div>
+
+                    <label class="text-sm font-semibold">
+                        Stock bajo
+                    </label>
+
+                    <input
+                        id="editarStock"
+                        type="number"
+                        min="0"
+                        class="w-full border
+                               rounded-lg px-3 py-2 mt-1">
+
+                </div>
+
+
+                <div>
+
+                    <label class="text-sm font-semibold">
+                        Próximos a vencer
+                    </label>
+
+                    <input
+                        id="editarVencer"
+                        type="number"
+                        min="0"
+                        class="w-full border
+                               rounded-lg px-3 py-2 mt-1">
+
+                </div>
+
+
+                <div>
+
+                    <label class="text-sm font-semibold">
+                        Valor total
+                    </label>
+
+                    <input
+                        id="editarValor"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        class="w-full border
+                               rounded-lg px-3 py-2 mt-1">
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="flex justify-end gap-3 mt-6">
+
+                <button
+                    onclick="cerrarModal('modalEditor')"
+                    class="px-4 py-2 border
+                           rounded-lg">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    onclick="guardarPanel()"
+                    class="px-5 py-2 bg-purple-600
+                           text-white rounded-lg
+                           font-semibold">
+
+                    💾 Guardar cambios
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         MODAL CUENTA
+    ========================================================== -->
+
+    <div
+        id="modalCuenta"
+        class="hidden fixed inset-0
+               bg-black/40 flex items-center
+               justify-center z-50 p-5">
+
+        <div
+            class="bg-white rounded-2xl
+                   p-6 w-full max-w-lg">
+
+            <div class="flex justify-between">
+
+                <h2
+                    id="tituloCuenta"
+                    class="text-xl font-bold">
+
+                    👤 Mi cuenta
+
+                </h2>
+
+                <button
+                    onclick="cerrarModal('modalCuenta')"
+                    class="text-xl">
+
+                    ✕
+
+                </button>
+
+            </div>
+
+
+            <!-- FOTO -->
+
+            <div class="flex flex-col
+                        items-center mt-5">
+
+                <div
+                    class="w-24 h-24 rounded-full
+                           overflow-hidden bg-gray-100
+                           border-4 border-purple-100
+                           flex items-center
+                           justify-center">
+
+                    <img
+                        id="previewFoto"
+                        src=""
+                        alt="Foto"
+                        class="w-full h-full
+                               object-cover hidden">
+
+                    <span
+                        id="previewIcono"
+                        class="text-4xl">
+
+                        👤
+
+                    </span>
+
+                </div>
+
+
+                <label
+                    class="mt-3 cursor-pointer
+                           text-purple-600
+                           font-semibold
+                           hover:underline">
+
+                    📷 Seleccionar foto
+
+                    <input
+                        id="fotoCuenta"
+                        type="file"
+                        accept="image/*"
+                        class="hidden"
+                        onchange="previsualizarFoto(event)">
+
+                </label>
+
+            </div>
+
+
+            <!-- DATOS -->
+
+            <div class="space-y-4 mt-6">
+
+                <div>
+
+                    <label class="text-sm font-semibold">
+                        Nombre
+                    </label>
+
+                    <input
+                        id="cuentaNombre"
+                        type="text"
+                        class="w-full border
+                               rounded-lg px-3 py-2 mt-1"
+                        placeholder="Nombre completo">
+
+                </div>
+
+
+                <div>
+
+                    <label class="text-sm font-semibold">
+                        Correo
+                    </label>
+
+                    <input
+                        id="cuentaCorreo"
+                        type="email"
+                        class="w-full border
+                               rounded-lg px-3 py-2 mt-1"
+                        placeholder="correo@instituto.com">
+
+                </div>
+
+
+                <div>
+
+                    <label class="text-sm font-semibold">
+                        Rol
+                    </label>
+
+                    <select
+                        id="cuentaRol"
+                        class="w-full border
+                               rounded-lg px-3 py-2 mt-1">
+
+                        <option value="Administrador">
+                            Administrador
+                        </option>
+
+                        <option value="Encargado de inventario">
+                            Encargado de inventario
+                        </option>
+
+                        <option value="Consulta">
+                            Consulta
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- BOTONES -->
+
+            <div
+                class="flex justify-between
+                       items-center mt-6">
+
+                <button
+                    id="btnEliminarCuenta"
+                    onclick="eliminarCuenta()"
+                    class="px-4 py-2
+                           text-red-600
+                           hover:bg-red-50
+                           rounded-lg">
+
+                    🗑️ Eliminar
+
+                </button>
+
+
+                <div class="flex gap-3">
+
+                    <button
+                        onclick="cerrarModal('modalCuenta')"
+                        class="px-4 py-2
+                               border rounded-lg">
+
+                        Cancelar
+
+                    </button>
+
+                    <button
+                        onclick="guardarCuenta()"
+                        class="px-5 py-2
+                               bg-purple-600
+                               text-white
+                               rounded-lg
+                               font-semibold">
+
+                        💾 Guardar
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         MODAL CAMBIAR CUENTA
+    ========================================================== -->
+
+    <div
+        id="modalCambiarCuenta"
+        class="hidden fixed inset-0
+               bg-black/40 flex items-center
+               justify-center z-50 p-5">
+
+        <div
+            class="bg-white rounded-2xl
+                   p-6 w-full max-w-md">
+
+            <h2 class="text-xl font-bold">
+
+                🔄 Cambiar cuenta
+
+            </h2>
+
+
+            <p class="text-sm text-gray-500 mt-1">
+
+                Selecciona la cuenta que deseas utilizar.
+
+            </p>
+
+
+            <div
+                id="listaCuentas"
+                class="space-y-2 mt-5">
+
+            </div>
+
+
+            <div class="flex justify-end mt-5">
+
+                <button
+                    onclick="cerrarModal('modalCambiarCuenta')"
+                    class="px-4 py-2 border
+                           rounded-lg">
+
+                    Cerrar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         MODAL CATEGORÍAS
+    ========================================================== -->
+
+    <div
+        id="modalCategorias"
+        class="hidden fixed inset-0
+               bg-black/40 flex items-center
+               justify-center z-50 p-5">
+
+        <div
+            class="bg-white rounded-2xl
+                   p-6 w-full max-w-lg">
+
+            <h2 class="text-xl font-bold">
+
+                📊 Editar Categorías
+
+            </h2>
+
+
+            <div
+                id="formCategorias"
+                class="space-y-3 mt-5">
+
+            </div>
+
+
+            <div
+                class="flex justify-end
+                       gap-3 mt-6">
+
+                <button
+                    onclick="cerrarModal('modalCategorias')"
+                    class="px-4 py-2 border
+                           rounded-lg">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    onclick="guardarCategorias()"
+                    class="px-5 py-2
+                           bg-purple-600
+                           text-white
+                           rounded-lg
+                           font-semibold">
+
+                    💾 Guardar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         MODAL ALERTAS
+    ========================================================== -->
+
+    <div
+        id="modalAlertas"
+        class="hidden fixed inset-0
+               bg-black/40 flex items-center
+               justify-center z-50 p-5">
+
+        <div
+            class="bg-white rounded-2xl
+                   p-6 w-full max-w-lg">
+
+            <h2 class="text-xl font-bold">
+
+                ⚠️ Editar Alertas
+
+            </h2>
+
+
+            <div
+                id="formAlertas"
+                class="space-y-3 mt-5">
+
+            </div>
+
+
+            <button
+                onclick="agregarCampoAlerta()"
+                class="mt-4 text-purple-600
+                       font-semibold">
+
+                + Agregar alerta
+
+            </button>
+
+
+            <div
+                class="flex justify-end
+                       gap-3 mt-6">
+
+                <button
+                    onclick="cerrarModal('modalAlertas')"
+                    class="px-4 py-2 border
+                           rounded-lg">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    onclick="guardarAlertas()"
+                    class="px-5 py-2
+                           bg-purple-600
+                           text-white
+                           rounded-lg
+                           font-semibold">
+
+                    💾 Guardar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         MODAL GRÁFICA
+    ========================================================== -->
+
+    <div
+        id="modalGrafica"
+        class="hidden fixed inset-0
+               bg-black/40 flex items-center
+               justify-center z-50 p-5">
+
+        <div
+            class="bg-white rounded-2xl
+                   p-6 w-full max-w-lg">
+
+            <h2 class="text-xl font-bold">
+
+                📈 Editar Gráfica
+
+            </h2>
+
+
+            <div
+                id="formGrafica"
+                class="space-y-3 mt-5">
+
+            </div>
+
+
+            <div
+                class="flex justify-end
+                       gap-3 mt-6">
+
+                <button
+                    onclick="cerrarModal('modalGrafica')"
+                    class="px-4 py-2 border
+                           rounded-lg">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    onclick="guardarGrafica()"
+                    class="px-5 py-2
+                           bg-purple-600
+                           text-white
+                           rounded-lg
+                           font-semibold">
+
+                    💾 Guardar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================== -->
+
+    <script>
+
+        /* =====================================================
+           DATOS DEL PANEL
+        ====================================================== */
+
+        const datosIniciales = {
+
+            productos: 6,
+
+            stockBajo: 2,
+
+            proximosVencer: 0,
+
+            valorTotal: 338.15,
+
+            categorias: [
+
+                {
+                    nombre: "Lácteos",
+                    cantidad: 45,
+                    porcentaje: 75
+                },
+
+                {
+                    nombre: "Granos",
+                    cantidad: 120,
+                    porcentaje: 90
+                },
+
+                {
+                    nombre: "Proteínas",
+                    cantidad: 15,
+                    porcentaje: 45
+                },
+
+                {
+                    nombre: "Verduras",
+                    cantidad: 8,
+                    porcentaje: 25
+                },
+
+                {
+                    nombre: "Panadería",
+                    cantidad: 90,
+                    porcentaje: 80
+                }
+
+            ],
+
+            alertas: [
+
+                "Leche Entera",
+                "Arroz Blanco",
+                "Pollo Congelado",
+                "Tomate Fresco",
+                "Pan Integral"
+
+            ],
+
+            actividades: [
+
+                {
+                    nombre: "Leche Entera",
+                    cantidad: "45 Litros"
+                },
+
+                {
+                    nombre: "Arroz Blanco",
+                    cantidad: "120 Kg"
+                },
+
+                {
+                    nombre: "Pollo Congelado",
+                    cantidad: "15 Kg"
+                },
+
+                {
+                    nombre: "Tomate Fresco",
+                    cantidad: "8 Kg"
+                },
+
+                {
+                    nombre: "Pan Integral",
+                    cantidad: "90 Unidades"
+                }
+
+            ],
+
+            grafica: [
+
+                {
+                    nombre: "Leche",
+                    cantidad: 100
+                },
+
+                {
+                    nombre: "Arroz",
+                    cantidad: 150
+                },
+
+                {
+                    nombre: "Pollo",
+                    cantidad: 70
+                },
+
+                {
+                    nombre: "Tomate",
+                    cantidad: 55
+                },
+
+                {
+                    nombre: "Pan",
+                    cantidad: 120
+                }
+
+            ]
+
+        };
+
+
+        /* =====================================================
+           CUENTAS
+        ====================================================== */
+
+        let cuentas = JSON.parse(
+            localStorage.getItem("cuentasInventario")
+        ) || [];
+
+
+        let cuentaActivaId =
+            localStorage.getItem(
+                "cuentaActivaInventario"
+            );
+
+
+        let cuentaEditandoId = null;
+
+        let fotoTemporal = "";
+
+
+        /* =====================================================
+           CREAR CUENTA ADMINISTRADOR POR DEFECTO
+        ====================================================== */
+
+        if (cuentas.length === 0) {
+
+            const cuentaInicial = {
+
+                id: Date.now().toString(),
+
+                nombre: "Admin",
+
+                correo: "admin@instituto.com",
+
+                rol: "Administrador",
+
+                foto: ""
+
+            };
+
+
+            cuentas.push(cuentaInicial);
+
+            cuentaActivaId =
+                cuentaInicial.id;
+
+            guardarCuentas();
+
+        }
+
+
+        /* =====================================================
+           DATOS PANEL
+        ====================================================== */
+
+        let datos =
+            JSON.parse(
+                localStorage.getItem(
+                    "datosPanel"
+                )
+            );
+
+
+        if (!datos) {
+
+            datos = datosIniciales;
+
+            guardarDatos();
+
+        }
+
+
+        /* =====================================================
+           GUARDAR DATOS PANEL
+        ====================================================== */
+
+        function guardarDatos() {
+
+            localStorage.setItem(
+                "datosPanel",
+                JSON.stringify(datos)
+            );
+
+        }
+
+
+        /* =====================================================
+           GUARDAR CUENTAS
+        ====================================================== */
+
+        function guardarCuentas() {
+
+            localStorage.setItem(
+                "cuentasInventario",
+                JSON.stringify(cuentas)
+            );
+
+
+            localStorage.setItem(
+                "cuentaActivaInventario",
+                cuentaActivaId
+            );
+
+        }
+
+
+        /* =====================================================
+           CUENTA ACTIVA
+        ====================================================== */
+
+        function obtenerCuentaActiva() {
+
+            return cuentas.find(
+                cuenta =>
+                    cuenta.id === cuentaActivaId
+            );
+
+        }
+
+
+        /* =====================================================
+           MOSTRAR PERFIL
+        ====================================================== */
+
+        function actualizarPerfil() {
+
+            const cuenta =
+                obtenerCuentaActiva();
+
+
+            if (!cuenta) {
+
+                return;
+
+            }
+
+
+            document.getElementById(
+                "nombreAdministrador"
+            ).textContent =
+                cuenta.nombre;
+
+
+            document.getElementById(
+                "rolAdministrador"
+            ).textContent =
+                cuenta.rol;
+
+
+            document.getElementById(
+                "menuNombre"
+            ).textContent =
+                cuenta.nombre;
+
+
+            document.getElementById(
+                "menuCorreo"
+            ).textContent =
+                cuenta.correo;
+
+
+            const foto =
+                document.getElementById(
+                    "fotoAdministrador"
+                );
+
+
+            const icono =
+                document.getElementById(
+                    "iconoAdministrador"
+                );
+
+
+            if (cuenta.foto) {
+
+                foto.src =
+                    cuenta.foto;
+
+                foto.classList.remove(
+                    "hidden"
+                );
+
+                icono.classList.add(
+                    "hidden"
+                );
+
+            } else {
+
+                foto.classList.add(
+                    "hidden"
+                );
+
+                icono.classList.remove(
+                    "hidden"
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           MENÚ CUENTA
+        ====================================================== */
+
+        function toggleMenuCuenta() {
+
+            document.getElementById(
+                "menuCuenta"
+            ).classList.toggle(
+                "hidden"
+            );
+
+        }
+
+
+        /* =====================================================
+           MI CUENTA
+        ====================================================== */
+
+        function abrirMiCuenta() {
+
+            document.getElementById(
+                "menuCuenta"
+            ).classList.add(
+                "hidden"
+            );
+
+
+            const cuenta =
+                obtenerCuentaActiva();
+
+
+            if (!cuenta) {
+
+                return;
+
+            }
+
+
+            cuentaEditandoId =
+                cuenta.id;
+
+
+            document.getElementById(
+                "tituloCuenta"
+            ).textContent =
+                "👤 Editar mi cuenta";
+
+
+            document.getElementById(
+                "cuentaNombre"
+            ).value =
+                cuenta.nombre;
+
+
+            document.getElementById(
+                "cuentaCorreo"
+            ).value =
+                cuenta.correo;
+
+
+            document.getElementById(
+                "cuentaRol"
+            ).value =
+                cuenta.rol;
+
+
+            fotoTemporal =
+                cuenta.foto || "";
+
+
+            mostrarPreview(
+                fotoTemporal
+            );
+
+
+            document.getElementById(
+                "btnEliminarCuenta"
+            ).classList.remove(
+                "hidden"
+            );
+
+
+            document.getElementById(
+                "modalCuenta"
+            ).classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        /* =====================================================
+           AGREGAR CUENTA
+        ====================================================== */
+
+        function abrirAgregarCuenta() {
+
+            document.getElementById(
+                "menuCuenta"
+            ).classList.add(
+                "hidden"
+            );
+
+
+            cuentaEditandoId =
+                null;
+
+
+            fotoTemporal =
+                "";
+
+
+            document.getElementById(
+                "tituloCuenta"
+            ).textContent =
+                "➕ Agregar cuenta";
+
+
+            document.getElementById(
+                "cuentaNombre"
+            ).value =
+                "";
+
+
+            document.getElementById(
+                "cuentaCorreo"
+            ).value =
+                "";
+
+
+            document.getElementById(
+                "cuentaRol"
+            ).value =
+                "Administrador";
+
+
+            document.getElementById(
+                "fotoCuenta"
+            ).value =
+                "";
+
+
+            mostrarPreview("");
+
+
+            document.getElementById(
+                "btnEliminarCuenta"
+            ).classList.add(
+                "hidden"
+            );
+
+
+            document.getElementById(
+                "modalCuenta"
+            ).classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        /* =====================================================
+           PREVISUALIZAR FOTO
+        ====================================================== */
+
+        function previsualizarFoto(event) {
+
+            const archivo =
+                event.target.files[0];
+
+
+            if (!archivo) {
+
+                return;
+
+            }
+
+
+            const lector =
+                new FileReader();
+
+
+            lector.onload =
+                function(e) {
+
+                    fotoTemporal =
+                        e.target.result;
+
+
+                    mostrarPreview(
+                        fotoTemporal
+                    );
+
+                };
+
+
+            lector.readAsDataURL(
+                archivo
+            );
+
+        }
+
+
+        /* =====================================================
+           MOSTRAR PREVIEW
+        ====================================================== */
+
+        function mostrarPreview(foto) {
+
+            const imagen =
+                document.getElementById(
+                    "previewFoto"
+                );
+
+
+            const icono =
+                document.getElementById(
+                    "previewIcono"
+                );
+
+
+            if (foto) {
+
+                imagen.src =
+                    foto;
+
+                imagen.classList.remove(
+                    "hidden"
+                );
+
+                icono.classList.add(
+                    "hidden"
+                );
+
+            } else {
+
+                imagen.classList.add(
+                    "hidden"
+                );
+
+                icono.classList.remove(
+                    "hidden"
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           GUARDAR CUENTA
+        ====================================================== */
+
+        function guardarCuenta() {
+
+            const nombre =
+                document.getElementById(
+                    "cuentaNombre"
+                ).value.trim();
+
+
+            const correo =
+                document.getElementById(
+                    "cuentaCorreo"
+                ).value.trim();
+
+
+            const rol =
+                document.getElementById(
+                    "cuentaRol"
+                ).value;
+
+
+            if (nombre === "") {
+
+                alert(
+                    "⚠️ Debes escribir el nombre."
+                );
+
+                return;
+
+            }
+
+
+            if (correo === "") {
+
+                alert(
+                    "⚠️ Debes escribir el correo."
+                );
+
+                return;
+
+            }
+
+
+            if (cuentaEditandoId) {
+
+                const cuenta =
+                    cuentas.find(
+                        c =>
+                            c.id ===
+                            cuentaEditandoId
+                    );
+
+
+                if (cuenta) {
+
+                    cuenta.nombre =
+                        nombre;
+
+                    cuenta.correo =
+                        correo;
+
+                    cuenta.rol =
+                        rol;
+
+                    cuenta.foto =
+                        fotoTemporal;
+
+                }
+
+            } else {
+
+                const nuevaCuenta = {
+
+                    id:
+                        Date.now().toString(),
+
+                    nombre:
+                        nombre,
+
+                    correo:
+                        correo,
+
+                    rol:
+                        rol,
+
+                    foto:
+                        fotoTemporal
+
+                };
+
+
+                cuentas.push(
+                    nuevaCuenta
+                );
+
+
+                cuentaActivaId =
+                    nuevaCuenta.id;
+
+            }
+
+
+            guardarCuentas();
+
+            actualizarPerfil();
+
+
+            cerrarModal(
+                "modalCuenta"
+            );
+
+
+            alert(
+                "✅ Cuenta guardada correctamente."
+            );
+
+        }
+
+
+        /* =====================================================
+           CAMBIAR CUENTA
+        ====================================================== */
+
+        function abrirCambiarCuenta() {
+
+            document.getElementById(
+                "menuCuenta"
+            ).classList.add(
+                "hidden"
+            );
+
+
+            const lista =
+                document.getElementById(
+                    "listaCuentas"
+                );
+
+
+            lista.innerHTML = "";
+
+
+            cuentas.forEach(
+                cuenta => {
+
+                    const boton =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    boton.className =
+                        "w-full flex items-center gap-3 p-3 border rounded-xl hover:bg-gray-50 transition text-left";
+
+
+                    const fotoHTML =
+                        cuenta.foto
+
+                            ? `<img src="${cuenta.foto}"
+                               class="w-11 h-11 rounded-full object-cover">`
+
+                            : `<div class="w-11 h-11 rounded-full
+                                      bg-purple-100 flex items-center
+                                      justify-center text-xl">
+                                  👤
+                               </div>`;
+
+
+                    boton.innerHTML = `
+
+                        ${fotoHTML}
+
+                        <div class="flex-1">
+
+                            <p class="font-semibold">
+
+                                ${cuenta.nombre}
+
+                            </p>
+
+                            <p class="text-xs text-gray-500">
+
+                                ${cuenta.rol}
+
+                            </p>
+
+                        </div>
+
+                        ${
+                            cuenta.id === cuentaActivaId
+                                ? '<span class="text-green-600 font-bold">✓</span>'
+                                : ''
+                        }
+
+                    `;
+
+
+                    boton.onclick =
+                        function() {
+
+                            cambiarCuenta(
+                                cuenta.id
+                            );
+
+                        };
+
+
+                    lista.appendChild(
+                        boton
+                    );
+
+                }
+            );
+
+
+            document.getElementById(
+                "modalCambiarCuenta"
+            ).classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        /* =====================================================
+           CAMBIAR CUENTA
+        ====================================================== */
+
+        function cambiarCuenta(id) {
+
+            cuentaActivaId =
+                id;
+
+
+            guardarCuentas();
+
+            actualizarPerfil();
+
+
+            cerrarModal(
+                "modalCambiarCuenta"
+            );
+
+
+            alert(
+                "✅ Cuenta cambiada correctamente."
+            );
+
+        }
+
+
+        /* =====================================================
+           ELIMINAR CUENTA
+        ====================================================== */
+
+        function eliminarCuenta() {
+
+            if (cuentas.length <= 1) {
+
+                alert(
+                    "⚠️ Debes tener al menos una cuenta."
+                );
+
+                return;
+
+            }
+
+
+            const confirmar =
+                confirm(
+                    "¿Seguro que deseas eliminar esta cuenta?"
+                );
+
+
+            if (!confirmar) {
+
+                return;
+
+            }
+
+
+            cuentas =
+                cuentas.filter(
+                    cuenta =>
+                        cuenta.id !==
+                        cuentaEditandoId
+                );
+
+
+            cuentaActivaId =
+                cuentas[0].id;
+
+
+            guardarCuentas();
+
+            actualizarPerfil();
+
+
+            cerrarModal(
+                "modalCuenta"
+            );
+
+
+            alert(
+                "🗑️ Cuenta eliminada."
+            );
+
+        }
+
+
+        /* =====================================================
+           EDITAR PANEL
+        ====================================================== */
+
+        function abrirEditorPanel() {
+
+            document.getElementById(
+                "editarProductos"
+            ).value =
+                datos.productos;
+
+
+            document.getElementById(
+                "editarStock"
+            ).value =
+                datos.stockBajo;
+
+
+            document.getElementById(
+                "editarVencer"
+            ).value =
+                datos.proximosVencer;
+
+
+            document.getElementById(
+                "editarValor"
+            ).value =
+                datos.valorTotal;
+
+
+            document.getElementById(
+                "modalEditor"
+            ).classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        /* =====================================================
+           GUARDAR PANEL
+        ====================================================== */
+
+        function guardarPanel() {
+
+            datos.productos =
+                Number(
+                    document.getElementById(
+                        "editarProductos"
+                    ).value
+                );
+
+
+            datos.stockBajo =
+                Number(
+                    document.getElementById(
+                        "editarStock"
+                    ).value
+                );
+
+
+            datos.proximosVencer =
+                Number(
+                    document.getElementById(
+                        "editarVencer"
+                    ).value
+                );
+
+
+            datos.valorTotal =
+                Number(
+                    document.getElementById(
+                        "editarValor"
+                    ).value
+                );
+
+
+            guardarDatos();
+
+            actualizarPanel();
+
+
+            cerrarModal(
+                "modalEditor"
+            );
+
+
+            alert(
+                "✅ Cambios guardados correctamente."
+            );
+
+        }
+
+
+        /* =====================================================
+           MOSTRAR CATEGORÍAS
+        ====================================================== */
+
+        function mostrarCategorias() {
+
+            const contenedor =
+                document.getElementById(
+                    "categorias"
+                );
+
+
+            contenedor.innerHTML =
+                "";
+
+
+            datos.categorias.forEach(
+                categoria => {
+
+                    const div =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    div.className =
+                        "mb-4";
+
+
+                    div.innerHTML = `
+
+                        <div class="flex justify-between
+                                    text-sm mb-1">
+
+                            <span>
+                                ${categoria.nombre}
+                            </span>
+
+                            <span class="text-gray-500">
+
+                                ${categoria.cantidad}
+                                unidades
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="h-3 bg-gray-100
+                                    rounded-full">
+
+                            <div
+                                class="h-3 bg-purple-500
+                                       rounded-full"
+
+                                style="width:
+                                ${categoria.porcentaje}%">
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+
+                    contenedor.appendChild(
+                        div
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           EDITAR CATEGORÍAS
+        ====================================================== */
+
+        function editarCategorias() {
+
+            const contenedor =
+                document.getElementById(
+                    "formCategorias"
+                );
+
+
+            contenedor.innerHTML =
+                "";
+
+
+            datos.categorias.forEach(
+                (categoria, indice) => {
+
+                    contenedor.innerHTML += `
+
+                        <div class="border
+                                    rounded-lg p-3">
+
+                            <label class="text-sm
+                                          font-semibold">
+
+                                ${categoria.nombre}
+
+                            </label>
+
+                            <div
+                                class="grid grid-cols-2
+                                       gap-2 mt-2">
+
+                                <input
+                                    id="catCantidad${indice}"
+                                    type="number"
+                                    min="0"
+                                    value="${categoria.cantidad}"
+
+                                    class="border rounded-lg
+                                           px-3 py-2">
+
+                                <input
+                                    id="catPorcentaje${indice}"
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    value="${categoria.porcentaje}"
+
+                                    class="border rounded-lg
+                                           px-3 py-2">
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            );
+
+
+            document.getElementById(
+                "modalCategorias"
+            ).classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        /* =====================================================
+           GUARDAR CATEGORÍAS
+        ====================================================== */
+
+        function guardarCategorias() {
+
+            datos.categorias.forEach(
+                (categoria, indice) => {
+
+                    categoria.cantidad =
+                        Number(
+                            document.getElementById(
+                                "catCantidad" +
+                                indice
+                            ).value
+                        );
+
+
+                    categoria.porcentaje =
+                        Number(
+                            document.getElementById(
+                                "catPorcentaje" +
+                                indice
+                            ).value
+                        );
+
+                }
+            );
+
+
+            guardarDatos();
+
+            actualizarPanel();
+
+
+            cerrarModal(
+                "modalCategorias"
+            );
+
+
+            alert(
+                "✅ Categorías actualizadas."
+            );
+
+        }
+
+
+        /* =====================================================
+           MOSTRAR ALERTAS
+        ====================================================== */
+
+        function mostrarAlertas() {
+
+            const contenedor =
+                document.getElementById(
+                    "listaAlertas"
+                );
+
+
+            contenedor.innerHTML =
+                "";
+
+
+            if (
+                datos.alertas.length === 0
+            ) {
+
+                contenedor.innerHTML = `
+
+                    <p class="text-sm
+                              text-gray-500">
+
+                        No hay alertas.
+
+                    </p>
+
+                `;
+
+                return;
+
+            }
+
+
+            datos.alertas.forEach(
+                alerta => {
+
+                    const div =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    div.className =
+                        "border rounded-lg px-4 py-3 flex items-center gap-2";
+
+
+                    div.innerHTML = `
+
+                        <span>
+                            ⚠️
+                        </span>
+
+                        <span>
+                            ${alerta}
+                        </span>
+
+                    `;
+
+
+                    contenedor.appendChild(
+                        div
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           EDITAR ALERTAS
+        ====================================================== */
+
+        function editarAlertas() {
+
+            const contenedor =
+                document.getElementById(
+                    "formAlertas"
+                );
+
+
+            contenedor.innerHTML =
+                "";
+
+
+            datos.alertas.forEach(
+                alerta => {
+
+                    agregarCampoAlerta(
+                        alerta
+                    );
+
+                }
+            );
+
+
+            document.getElementById(
+                "modalAlertas"
+            ).classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        function agregarCampoAlerta(
+            valor = ""
+        ) {
+
+            const contenedor =
+                document.getElementById(
+                    "formAlertas"
+                );
+
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "flex gap-2";
+
+
+            div.innerHTML = `
+
+                <input
+                    value="${valor}"
+                    class="campoAlerta flex-1
+                           border rounded-lg
+                           px-3 py-2"
+                    placeholder="Nombre del producto">
+
+
+                <button
+                    type="button"
+                    onclick="this.parentElement.remove()"
+                    class="px-3 py-2
+                           bg-red-100
+                           text-red-600
+                           rounded-lg">
+
+                    🗑️
+
+                </button>
+
+            `;
+
+
+            contenedor.appendChild(
+                div
+            );
+
+        }
+
+
+        /* =====================================================
+           GUARDAR ALERTAS
+        ====================================================== */
+
+        function guardarAlertas() {
+
+            const campos =
+                document.querySelectorAll(
+                    ".campoAlerta"
+                );
+
+
+            datos.alertas =
+                [];
+
+
+            campos.forEach(
+                campo => {
+
+                    const valor =
+                        campo.value.trim();
+
+
+                    if (valor !== "") {
+
+                        datos.alertas.push(
+                            valor
+                        );
+
+                    }
+
+                }
+            );
+
+
+            guardarDatos();
+
+            actualizarPanel();
+
+
+            cerrarModal(
+                "modalAlertas"
+            );
+
+
+            alert(
+                "✅ Alertas actualizadas."
+            );
+
+        }
+
+
+        /* =====================================================
+           ACTIVIDAD
+        ====================================================== */
+
+        function mostrarActividades() {
+
+            const contenedor =
+                document.getElementById(
+                    "listaActividad"
+                );
+
+
+            contenedor.innerHTML =
+                "";
+
+
+            datos.actividades.forEach(
+                actividad => {
+
+                    const div =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    div.className =
+                        "flex justify-between border-b pb-3";
+
+
+                    div.innerHTML = `
+
+                        <div>
+
+                            <p class="font-medium text-sm">
+
+                                🟣
+                                ${actividad.nombre}
+
+                            </p>
+
+                            <p class="text-xs
+                                      text-gray-400">
+
+                                Actualizado recientemente
+
+                            </p>
+
+                        </div>
+
+
+                        <strong>
+
+                            ${actividad.cantidad}
+
+                        </strong>
+
+                    `;
+
+
+                    contenedor.appendChild(
+                        div
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           AGREGAR ACTIVIDAD
+        ====================================================== */
+
+        function agregarActividad() {
+
+            const nombre =
+                prompt(
+                    "Nombre del producto:"
+                );
+
+
+            if (!nombre) {
+
+                return;
+
+            }
+
+
+            const cantidad =
+                prompt(
+                    "Cantidad:"
+                );
+
+
+            if (!cantidad) {
+
+                return;
+
+            }
+
+
+            datos.actividades.unshift({
+
+                nombre:
+                    nombre,
+
+                cantidad:
+                    cantidad
+
+            });
+
+
+            datos.actividades =
+                datos.actividades.slice(
+                    0,
+                    5
+                );
+
+
+            guardarDatos();
+
+            actualizarPanel();
+
+
+            alert(
+                "✅ Actividad agregada."
+            );
+
+        }
+
+
+        /* =====================================================
+           GRÁFICA
+        ====================================================== */
+
+        function mostrarGrafica() {
+
+            const contenedor =
+                document.getElementById(
+                    "grafica"
+                );
+
+
+            contenedor.innerHTML =
+                "";
+
+
+            const colores = [
+
+                "bg-blue-500",
+
+                "bg-purple-500",
+
+                "bg-orange-400",
+
+                "bg-yellow-400",
+
+                "bg-red-400"
+
+            ];
+
+
+            datos.grafica.forEach(
+                (producto, indice) => {
+
+                    const div =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    div.className =
+                        "flex flex-col items-center gap-2";
+
+
+                    const altura =
+                        Math.max(
+                            20,
+                            Math.min(
+                                180,
+                                producto.cantidad
+                            )
+                        );
+
+
+                    div.innerHTML = `
+
+                        <div
+                            class="w-10
+                                   ${
+                                       colores[
+                                           indice %
+                                           colores.length
+                                       ]
+                                   }
+                                   rounded-t-lg"
+
+                            style="height:
+                                   ${altura}px">
+
+                        </div>
+
+
+                        <span class="text-xs">
+
+                            ${producto.nombre}
+
+                        </span>
+
+                    `;
+
+
+                    contenedor.appendChild(
+                        div
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           EDITAR GRÁFICA
+        ====================================================== */
+
+        function editarGrafica() {
+
+            const contenedor =
+                document.getElementById(
+                    "formGrafica"
+                );
+
+
+            contenedor.innerHTML =
+                "";
+
+
+            datos.grafica.forEach(
+                (producto, indice) => {
+
+                    contenedor.innerHTML += `
+
+                        <div
+                            class="grid grid-cols-2
+                                   gap-2">
+
+                            <input
+                                id="graficaNombre${indice}"
+                                value="${producto.nombre}"
+
+                                class="border rounded-lg
+                                       px-3 py-2">
+
+                            <input
+                                id="graficaCantidad${indice}"
+                                type="number"
+                                min="10"
+                                max="180"
+                                value="${producto.cantidad}"
+
+                                class="border rounded-lg
+                                       px-3 py-2">
+
+                        </div>
+
+                    `;
+
+                }
+            );
+
+
+            document.getElementById(
+                "modalGrafica"
+            ).classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        /* =====================================================
+           GUARDAR GRÁFICA
+        ====================================================== */
+
+        function guardarGrafica() {
+
+            datos.grafica.forEach(
+                (producto, indice) => {
+
+                    producto.nombre =
+                        document.getElementById(
+                            "graficaNombre" +
+                            indice
+                        ).value;
+
+
+                    producto.cantidad =
+                        Number(
+                            document.getElementById(
+                                "graficaCantidad" +
+                                indice
+                            ).value
+                        );
+
+                }
+            );
+
+
+            guardarDatos();
+
+            actualizarPanel();
+
+
+            cerrarModal(
+                "modalGrafica"
+            );
+
+
+            alert(
+                "✅ Gráfica actualizada."
+            );
+
+        }
+
+
+        /* =====================================================
+           NOTIFICACIONES
+        ====================================================== */
+
+        function mostrarNotificaciones() {
+
+            if (
+                datos.alertas.length === 0
+            ) {
+
+                alert(
+                    "🔔 No tienes alertas pendientes."
+                );
+
+                return;
+
+            }
+
+
+            alert(
+                "🔔 Tienes " +
+                datos.alertas.length +
+                " alerta(s) de inventario."
+            );
+
+        }
+
+
+        /* =====================================================
+           CONFIGURACIÓN
+        ====================================================== */
+
+        function abrirConfiguracion() {
+
+            alert(
+                "⚙️ Configuración\n\n" +
+                "Esta sección queda preparada " +
+                "para conectarse posteriormente " +
+                "con el módulo de configuración."
+            );
+
+        }
+
+
+        /* =====================================================
+           NAVEGACIÓN
+        ====================================================== */
+
+        function irA(pagina) {
+
+            window.location.href =
+                pagina;
+
+        }
+
+
+        /* =====================================================
+           CERRAR SESIÓN
+        ====================================================== */
+
+        function cerrarSesion() {
+
+            const confirmar =
+                confirm(
+                    "¿Seguro que deseas cerrar sesión?"
+                );
+
+
+            if (!confirmar) {
+
+                return;
+
+            }
+
+
+            localStorage.removeItem(
+                "cuentaActivaInventario"
+            );
+
+
+            alert(
+                "✅ Sesión cerrada correctamente."
+            );
+
+
+            window.location.href =
+                "index.html";
+
+        }
+
+
+        /* =====================================================
+           CERRAR MODAL
+        ====================================================== */
+
+        function cerrarModal(id) {
+
+            document.getElementById(
+                id
+            ).classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        /* =====================================================
+           ACTUALIZAR PANEL
+        ====================================================== */
+
+        function actualizarPanel() {
+
+            document.getElementById(
+                "totalProductos"
+            ).textContent =
+                datos.productos;
+
+
+            document.getElementById(
+                "stockBajo"
+            ).textContent =
+                datos.stockBajo;
+
+
+            document.getElementById(
+                "proximosVencer"
+            ).textContent =
+                datos.proximosVencer;
+
+
+            document.getElementById(
+                "valorTotal"
+            ).textContent =
+                "$" +
+                Number(
+                    datos.valorTotal
+                ).toFixed(2);
+
+
+            document.getElementById(
+                "contadorAlertas"
+            ).textContent =
+                datos.alertas.length;
+
+
+            mostrarCategorias();
+
+            mostrarAlertas();
+
+            mostrarActividades();
+
+            mostrarGrafica();
+
+            actualizarPerfil();
+
+        }
+
+
+        /* =====================================================
+           CERRAR MENÚ AL HACER CLICK FUERA
+        ====================================================== */
+
+        document.addEventListener(
+            "click",
+            function(event) {
+
+                const menu =
+                    document.getElementById(
+                        "menuCuenta"
+                    );
+
+
+                const boton =
+                    event.target.closest(
+                        "button"
+                    );
+
+
+                if (
+                    !menu.contains(event.target) &&
+                    !boton
+                ) {
+
+                    menu.classList.add(
+                        "hidden"
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           INICIAR SISTEMA
+        ====================================================== */
+
+        actualizarPanel();
+
+    </script>
+
+</body>
+
+</html>

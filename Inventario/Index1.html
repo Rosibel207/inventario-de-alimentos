@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventario Escolar - Reportes de Salidas</title>
+  <link rel="stylesheet" href="Estilos1.css">
+  <!-- Chart.js para las gráficas -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Fondo oscuro para cerrar el menú en móviles/despliegue -->
+  <div id="fondoMenu" class="fondo-menu"></div>
+
+  <div class="dashboard-container sistema">
+    
+    <!-- Menú Lateral con Logo Institucional -->
+    <aside class="sidebar menu-lateral">
+      <div class="brand logo-area">
+        <img src="img/logo-instituto.jpg" alt="Logo Instituto" class="brand-logo-img logo-instituto">
+        <div class="nombre-logo">
+          <strong>Instituto Nacional</strong>
+          <span>Prof. Bertha Fidelia Cañas</span>
+        </div>
+      </div>
+      <nav class="menu">
+        <button class="menu-item" onclick="window.location.href='panel.html'">
+        <span class="icono-menu panel-icon">🔲</span>
+        <span>Panel de Control</span>
+</button>
+        <button class="menu-item" onclick="window.location.href='catalogo.html'">
+        <span class="icono-menu catalogo-icon">📄</span>
+        <span>Catálogo</span>
+</button>
+        <button class="menu-item" onclick="mostrarModulo('alertas', this)">
+          <span class="icono-menu alerta-icon">⚠️</span>
+          <span>Alertas</span>
+        </button>
+        <button class="menu-item" onclick="window.location.href='indext.html'">
+        <span class="icono-menu entrada-icon">⬆️</span>
+        <span>Entradas</span>
+</button>
+        <button class="menu-item active" onclick="mostrarModulo('salidas', this)">
+          <span class="icono-menu salida-icon">⬇️</span>
+          <span>Salidas</span>
+        </button>
+        <button class="menu-item" onclick="mostrarModulo('configuracion', this)">
+          <span class="icono-menu config-icon">⚙️</span>
+          <span>Configuración</span>
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="menu-item logout cerrar-sesion" onclick="logoutAccount()">
+          <span class="icono-salir">🚪</span>
+          <span>Cerrar Sesión</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main class="main-content contenido">
+      
+      <!-- Encabezado Superior -->
+      <header class="top-header cabecera">
+        <button id="btnHamburguesa" class="btn-hamburguesa">☰</button>
+
+        <div class="header-titles titulo">
+          <h1 id="tituloModulo">Reportes de Salidas</h1>
+          <p id="subtituloModulo">Sistema de Control de Alimentos Escolares</p>
+        </div>
+        
+        <!-- Sección de Cuentas -->
+        <div class="account-container usuario">
+          <div class="user-profile" onclick="toggleMenuCuenta(event)">
+            <span class="notification-icon">🔔</span>
+            <div class="avatar" id="avatarContainer">
+              <img id="fotoAdministrador" src="" alt="Foto de perfil" class="hidden">
+              <span id="iconoAdministrador">👤</span>
+            </div>
+            <div class="user-info-header">
+              <span class="username" id="nombreAdministrador">Admin</span>
+              <small class="user-role" id="rolAdministrador">Administrador</small>
+            </div>
+            <span class="dropdown-arrow">▼</span>
+          </div>
+
+          <div id="menuCuenta" class="edit-dropdown account-dropdown hidden">
+            <div class="account-info-header">
+              <p id="menuNombre" class="font-bold">Admin</p>
+              <p id="menuCorreo" class="text-muted">admin@instituto.com</p>
+            </div>
+            <button class="dropdown-btn" onclick="abrirMiCuenta()">👤 Mi cuenta</button>
+            <button class="dropdown-btn" onclick="abrirAgregarCuenta()">➕ Agregar cuenta</button>
+            <button class="dropdown-btn" onclick="abrirCambiarCuenta()">🔄 Cambiar cuenta</button>
+          </div>
+        </div>
+      </header>
+
+      <div id="contenidoModulo">
+        <!-- Panel de Gráficas (Vinculadas a la tabla) -->
+        <section class="charts-section">
+          <!-- Gráfica de Tendencia (Líneas / Barras) -->
+          <div class="chart-container line-chart-box">
+            <button class="btn-corner-edit" title="Cambiar tipo de gráfica" onclick="toggleEditDropdown('editLineChartPanel')">✏️</button>
+            
+            <div id="editLineChartPanel" class="edit-dropdown">
+              <h4>Tipo de Gráfica (Histórico)</h4>
+              <label for="selectLineChartType">Tipo:</label>
+              <select id="selectLineChartType" onchange="changeLineChartType(this.value)">
+                <option value="line">Líneas</option>
+                <option value="bar">Barras</option>
+              </select>
+            </div>
+
+            <canvas id="lineChart"></canvas>
+          </div>
+
+          <!-- Gráfica de Distribución (Dona / Pastel) -->
+          <div class="chart-container donut-chart-box">
+            <button class="btn-corner-edit" title="Cambiar tipo de gráfica" onclick="toggleEditDropdown('editDonutChartPanel')">✏️</button>
+
+            <div id="editDonutChartPanel" class="edit-dropdown">
+              <h4>Tipo de Gráfica (Distribución)</h4>
+              <label for="selectDonutChartType">Tipo:</label>
+              <select id="selectDonutChartType" onchange="changeDonutChartType(this.value)">
+                <option value="doughnut">Dona</option>
+                <option value="pie">Pastel</option>
+                <option value="bar">Barras</option>
+              </select>
+            </div>
+
+            <canvas id="donutChart"></canvas>
+          </div>
+        </section>
+
+        <!-- Tabla con Filtro y Datos -->
+        <section class="table-section">
+          <div class="table-card">
+            <button class="btn-corner-edit" title="Editar Opciones de Tabla" onclick="toggleEditDropdown('editTablePanel')">✏️</button>
+
+            <div id="editTablePanel" class="edit-dropdown">
+              <h4>Configurar Tabla</h4>
+              <p style="margin-bottom: 6px; font-weight: 600;">Visibilidad de columnas:</p>
+              <div class="checkbox-group">
+                <label><input type="checkbox" checked onclick="toggleTableColumn(1)"> Cantidad</label>
+                <label><input type="checkbox" checked onclick="toggleTableColumn(2)"> Fecha</label>
+                <label><input type="checkbox" checked onclick="toggleTableColumn(3)"> Hora</label>
+                <label><input type="checkbox" checked onclick="toggleTableColumn(4)"> Destino</label>
+                <label><input type="checkbox" checked onclick="toggleTableColumn(5)"> Responsable</label>
+              </div>
+              <button class="btn-save" style="margin-top: 8px;" onclick="addNewRowPrompt()">+ Agregar Nuevo Registro</button>
+            </div>
+
+            <div class="table-header">
+              <div class="table-header-left">
+                <h2>Registro de Salidas</h2>
+              </div>
+              <div class="filter-box">
+                <span class="filter-icon">🔍</span>
+                <input type="text" id="filterInput" placeholder="Filtrar por producto o responsable..." onkeyup="filterTable()">
+              </div>
+            </div>
+
+            <div class="table-wrapper">
+              <table id="salidasTable">
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Destino</th>
+                    <th>Responsable</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="tableBody">
+                  <!-- Los datos se cargan dinámicamente -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- MODALES CUENTA -->
+  <div id="modalCuenta" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="tituloCuenta">👤 Mi cuenta</h3>
+        <button class="modal-close" onclick="cerrarModal('modalCuenta')">✕</button>
+      </div>
+
+      <div class="photo-preview-container">
+        <div class="photo-circle">
+          <img id="previewFoto" src="" alt="Foto" class="hidden">
+          <span id="previewIcono">👤</span>
+        </div>
+        <label class="btn-upload-photo">
+          📷 Seleccionar foto
+          <input id="fotoCuenta" type="file" accept="image/*" class="hidden" onchange="previsualizarFoto(event)">
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label for="cuentaNombre">Nombre</label>
+        <input id="cuentaNombre" type="text" placeholder="Nombre completo">
+      </div>
+
+      <div class="form-group">
+        <label for="cuentaCorreo">Correo</label>
+        <input id="cuentaCorreo" type="email" placeholder="correo@instituto.com">
+      </div>
+
+      <div class="form-group">
+        <label for="cuentaRol">Rol</label>
+        <select id="cuentaRol">
+          <option value="Administrador">Administrador</option>
+          <option value="Encargado de inventario">Encargado de inventario</option>
+          <option value="Consulta">Consulta</option>
+        </select>
+      </div>
+
+      <div class="modal-footer">
+        <button id="btnEliminarCuenta" class="btn-danger" onclick="eliminarCuenta()">🗑️ Eliminar</button>
+        <div class="modal-footer-right">
+          <button class="btn-secondary" onclick="cerrarModal('modalCuenta')">Cancelar</button>
+          <button class="btn-save" onclick="guardarCuenta()">💾 Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalCambiarCuenta" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>🔄 Cambiar cuenta</h3>
+        <button class="modal-close" onclick="cerrarModal('modalCambiarCuenta')">✕</button>
+      </div>
+      <p class="modal-subtitle">Selecciona la cuenta que deseas utilizar.</p>
+      <div id="listaCuentas" class="account-list"></div>
+      <div class="modal-footer" style="justify-content: flex-end;">
+        <button class="btn-secondary" onclick="cerrarModal('modalCambiarCuenta')">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="Java1.js"></script>
+</body>
+</html>
